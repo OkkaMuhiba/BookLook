@@ -1,13 +1,15 @@
 package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.future.booklook.model.constants.ProductConstant;
+import com.future.booklook.model.constants.UserConstant;
 import com.future.booklook.model.constants.WishlistConstant;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = WishlistConstant.TABLE_NAME)
+ @Entity
+ @Table(name = WishlistConstant.TABLE_NAME)
 public class Wishlist {
     @Id
     @Column(name = WishlistConstant.WISHLIST_ID)
@@ -23,12 +25,12 @@ public class Wishlist {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = WishlistConstant.USER_ID, referencedColumnName = WishlistConstant.USER_ID)
+    @JoinColumn(name = WishlistConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
     private User user;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = WishlistConstant.PRODUCT_ID, referencedColumnName = WishlistConstant.PRODUCT_ID)
+    @JoinColumn(name = WishlistConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
     public String getWishlistId() {

@@ -2,6 +2,7 @@ package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.CategoryProductConstant;
+import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.ProductConstant;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -47,21 +48,19 @@ public class Product {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = ProductConstant.MARKET_ID, referencedColumnName = ProductConstant.MARKET_ID)
+    @JoinColumn(name = ProductConstant.MARKET_FK, referencedColumnName = MarketConstant.MARKET_ID)
     private Market market;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = CategoryProductConstant.TABLE_NAME,
-            joinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID),
-            inverseJoinColumns = @JoinColumn(name = CategoryProductConstant.CATEGORY_ID)
-    )
+    @ManyToMany(mappedBy = "products")
     private Set<Category> categories;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private Set<Wishlist> wishlists;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private Set<Library> libraries;
 
     public String getProductId() {
         return productId;

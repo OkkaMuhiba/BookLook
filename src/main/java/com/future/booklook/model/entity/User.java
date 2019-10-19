@@ -1,6 +1,7 @@
 package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.UserConstant;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -35,9 +36,6 @@ public class User {
     @Column(name = UserConstant.ROLE)
     private String role;
 
-    @Column(name = UserConstant.MARKET_ID)
-    private String marketId;
-
     @Column(name = UserConstant.PHOTO_USER)
     private String photoUser;
 
@@ -48,13 +46,18 @@ public class User {
     private Date updatedAt;
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = UserConstant.MARKET_ID, referencedColumnName = UserConstant.MARKET_ID)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     private Market market;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Wishlist> wishlists;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private Set<Library> libraries;
+
+    public User() { }
 
     public String getUserId() {
         return userId;
@@ -112,14 +115,6 @@ public class User {
         this.role = role;
     }
 
-    public String getMarketId() {
-        return marketId;
-    }
-
-    public void setMarketId(String marketId) {
-        this.marketId = marketId;
-    }
-
     public String getPhotoUser() {
         return photoUser;
     }
@@ -158,5 +153,13 @@ public class User {
 
     public void setWishlists(Set<Wishlist> wishlists) {
         this.wishlists = wishlists;
+    }
+
+    public Set<Library> getLibraries() {
+        return libraries;
+    }
+
+    public void setLibraries(Set<Library> libraries) {
+        this.libraries = libraries;
     }
 }

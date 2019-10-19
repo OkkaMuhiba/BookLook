@@ -2,6 +2,7 @@ package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.MarketConstant;
+import com.future.booklook.model.constants.UserConstant;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class Market {
     @Column(name = MarketConstant.MARKET_NAME)
     private String marketName;
 
+    @Column(name = MarketConstant.USER_ID)
+    private String userID;
+
     @Column(name = MarketConstant.MARKET_BIO)
     private String marketBio;
 
@@ -37,7 +41,8 @@ public class Market {
     private Date updatedAt;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "market", fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = MarketConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
     private User user;
 
     @JsonIgnore
@@ -50,6 +55,14 @@ public class Market {
 
     public void setMarketId(String marketId) {
         this.marketId = marketId;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getMarketName() {

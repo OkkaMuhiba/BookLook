@@ -1,13 +1,15 @@
 package com.future.booklook.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.CategoryConstant;
+import com.future.booklook.model.constants.CategoryProductConstant;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
-@Table(name = CategoryConstant.TABLE_NAME)
+ @Entity
+ @Table(name = CategoryConstant.TABLE_NAME)
 public class Category {
     @Id
     @Column(name = CategoryConstant.CATEGORY_ID)
@@ -18,7 +20,13 @@ public class Category {
     @Column(name = CategoryConstant.CATEGORY_NAME)
     private String categoryName;
 
-    @ManyToMany(mappedBy = "categoryOfProduct")
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = CategoryProductConstant.TABLE_NAME,
+            joinColumns = @JoinColumn(name = CategoryProductConstant.CATEGORY_ID),
+            inverseJoinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID)
+    )
     private Set<Product> products;
 
     public String getCategortyId() {
