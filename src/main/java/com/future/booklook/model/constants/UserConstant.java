@@ -8,7 +8,7 @@ public class UserConstant {
     public static final String EMAIL = "email";
     public static final String NAME = "name";
     public static final String NUMBER_PHONE = "number_phone";
-    public static final String ROLE = "role";
+    public static final String ROLE_ID = "role_id";
     public static final String MARKET_ID = "market_id";
     public static final String PHOTO_USER = "photo_user";
     public static final String CREATED_AT = "created_at";

@@ -1,17 +1,17 @@
 package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.UserConstant;
 import org.hibernate.annotations.GenericGenerator;
 
+
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = UserConstant.TABLE_NAME)
-public class User {
+public class User{
     @Id
     @Column(name = UserConstant.USER_ID)
     @GeneratedValue(generator = "system-uuid")
@@ -33,9 +33,6 @@ public class User {
     @Column(name = UserConstant.NUMBER_PHONE)
     private String numberPhone;
 
-    @Column(name = UserConstant.ROLE)
-    private String role;
-
     @Column(name = UserConstant.PHOTO_USER)
     private String photoUser;
 
@@ -44,6 +41,12 @@ public class User {
 
     @Column(name = UserConstant.UPDATED_AT)
     private Date updatedAt;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
@@ -56,6 +59,12 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Library> libraries;
+
+    public User(String name, String username, String password) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
 
     public User() { }
 
@@ -107,14 +116,6 @@ public class User {
         this.numberPhone = numberPhone;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public String getPhotoUser() {
         return photoUser;
     }
@@ -137,6 +138,14 @@ public class User {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public Market getMarket() {
