@@ -62,6 +62,16 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<Library> libraries;
 
+    public Product(String title, String author, String publisher, String SKU, String description, Long price, Market market) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.SKU = SKU;
+        this.description = description;
+        this.price = price;
+        this.market = market;
+    }
+
     public String getProductId() {
         return productId;
     }
