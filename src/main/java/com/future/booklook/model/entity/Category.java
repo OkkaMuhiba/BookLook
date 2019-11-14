@@ -6,6 +6,8 @@ import com.future.booklook.model.constants.CategoryProductConstant;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
  @Entity
@@ -28,6 +30,10 @@ public class Category {
             inverseJoinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID)
     )
     private Set<Product> products;
+
+    public Category(String categoryName) {
+         this.categoryName = categoryName;
+    }
 
     public String getCategortyId() {
         return categortyId;
