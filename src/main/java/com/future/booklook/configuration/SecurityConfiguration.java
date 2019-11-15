@@ -64,7 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/markets/create",
                         "/api/products/create"
                 ).hasRole("USER")
-                .antMatchers("/api/home").authenticated()
+//                .antMatchers("/api/home").authenticated()
                 .anyRequest().permitAll();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

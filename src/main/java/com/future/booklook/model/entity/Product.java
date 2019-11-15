@@ -51,7 +51,13 @@ public class Product {
     @JoinColumn(name = ProductConstant.MARKET_FK, referencedColumnName = MarketConstant.MARKET_ID)
     private Market market;
 
-    @ManyToMany(mappedBy = "products")
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = CategoryProductConstant.TABLE_NAME,
+            joinColumns = @JoinColumn(name = CategoryProductConstant.CATEGORY_ID),
+            inverseJoinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID)
+    )
     private Set<Category> categories;
 
     @JsonIgnore
@@ -62,14 +68,16 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<Library> libraries;
 
-    public Product(String title, String author, String publisher, String SKU, String description, Long price, Market market) {
+    public Product(String title, String author, String publisher, String SKU, String description, Long price, Set<Category> categories, Market market, String productPhoto) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
         this.SKU = SKU;
-        this.description = description;
         this.price = price;
+        this.description = description;
+        this.categories = categories;
         this.market = market;
+        this.productPhoto = productPhoto;
     }
 
     public String getProductId() {

@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/markets")
@@ -41,6 +38,14 @@ public class MarketController {
 
         marketService.save(market);
         return new ResponseEntity(new ApiResponse(true, "Market created successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getMarketData(){
+        String userId = getUserPrincipal().getUserId();
+        User user = userService.findByUserId(userId);
+
+        return new ResponseEntity(marketService.findByUser(user), HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {

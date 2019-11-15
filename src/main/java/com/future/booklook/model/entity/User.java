@@ -21,6 +21,7 @@ public class User{
     @Column(name = UserConstant.USERNAME)
     private String username;
 
+    @JsonIgnore
     @Column(name = UserConstant.PASSWORD)
     private String password;
 
@@ -42,6 +43,7 @@ public class User{
     @Column(name = UserConstant.UPDATED_AT)
     private Date updatedAt;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

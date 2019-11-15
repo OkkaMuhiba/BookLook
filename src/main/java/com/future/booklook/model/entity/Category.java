@@ -23,16 +23,15 @@ public class Category {
     private String categoryName;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = CategoryProductConstant.TABLE_NAME,
-            joinColumns = @JoinColumn(name = CategoryProductConstant.CATEGORY_ID),
-            inverseJoinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID)
-    )
+    @ManyToMany(mappedBy = "categories")
     private Set<Product> products;
 
     public Category(String categoryName) {
          this.categoryName = categoryName;
+    }
+
+    public Category(){
+
     }
 
     public String getCategortyId() {
