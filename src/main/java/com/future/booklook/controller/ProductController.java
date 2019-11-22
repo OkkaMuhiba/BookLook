@@ -46,15 +46,16 @@ public class ProductController {
             @RequestParam("sku") String sku,
             @RequestParam("price") String price,
             @RequestParam("picture") MultipartFile picture,
-            @RequestParam("categories") String[] categories
+            @RequestParam("categories") String categories
     ){
         String userId = getUserPrincipal().getUserId();
         User user = userService.findByUserId(userId);
         Market market = marketService.findByUser(user);
 
+        String[] categoryArray = categories.split(", ");
         Set<Category> categoriesSet = new HashSet<>();
-        for (String category:categories) {
-            categoriesSet.add(this.categoryService.findCategoryByCategoryName(category));
+        for (String category:categoryArray) {
+            categoriesSet.add(this.categoryService.findByCategoryName(category));
         }
 
         MultipartFile file = picture;
@@ -78,6 +79,17 @@ public class ProductController {
 
         productService.save(product);
         return new ResponseEntity(new ApiResponse(true, "Product created successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping("/{categoryName}")
+    public Set<Product> getProductsFromCategory(@PathVariable String categoryName){
+        Category category = categoryService.findByCategoryName(categoryName);
+        Set<Category> categoriesSet = new HashSet<>();
+        categoriesSet.add(category);
+
+        Set<Product> products = productService.findProductsByCategories(categoriesSet);
+
+        return products;
     }
 
     public UserPrincipal getUserPrincipal() {

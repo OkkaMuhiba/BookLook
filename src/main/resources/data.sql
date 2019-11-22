@@ -17,18 +17,22 @@ INSERT INTO user_roles
 VALUES('d24146e7-0563-41db-9375-a4f4637a2c50', 1)
 ON CONFLICT DO NOTHING;
 
+INSERT INTO category_lists
+VALUES('c74bba01-66ee-4b41-acf0-3fdc80c2c760', 'Fiction')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO category_lists
+VALUES('62fd358e-f810-404f-bd11-52caa08428c4', 'Education')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO category_lists
+VALUES('5ae17781-c90f-4faa-b048-570f7e04f7db', 'Health')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO category_lists
+VALUES('89e9289a-30d6-42cd-a3aa-0260763cc8ae', 'Sport')
+ON CONFLICT DO NOTHING;
+
 INSERT INTO markets(market_id, market_name, market_sku, market_bio, user_id, user_fk)
 VALUES('784ebb05-c34a-4737-84a6-a312e7661a53', 'Sebuah Toko', 'SBT', 'Ini merupakan sebuah toko', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc')
-ON CONFLICT DO NOTHING;
-
-INSERT INTO products(product_id, title, description, author, publisher, SKU, price, market_fk)
-VALUES('5e817d2b-13a7-4123-a71a-a5f1d076b9e6', 'Sebuah Buku', 'Ini adalah sebuah buku', 'Manusia', 'Orang lain', 'SBT-010', 50000, '784ebb05-c34a-4737-84a6-a312e7661a53')
-ON CONFLICT DO NOTHING;
-
-INSERT INTO products(product_id, title, description, author, publisher, SKU, price, market_fk)
-VALUES('cbfe146e-da05-43d1-8dd9-a875ee95f0f0', 'How To Become Human', 'How someone can be called as "Human" in this world', 'Manusia', 'Sapa saja bisa', 'SBT-011', 65000, '784ebb05-c34a-4737-84a6-a312e7661a53')
-ON CONFLICT DO NOTHING;
-
-INSERT INTO products(product_id, title, description, author, publisher, SKU, price, market_fk)
-VALUES('1454ca3e-a0c2-4c9c-863c-b4cc81a9ad93', 'Sebuah Kegabutan', 'Bagaimana cara terbaik untuk bisa gabut dalam kehidupan sehari-hari?', 'Manusia', 'Sapa saja bisa', 'SBT-012', 35000, '784ebb05-c34a-4737-84a6-a312e7661a53')
 ON CONFLICT DO NOTHING;

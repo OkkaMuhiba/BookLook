@@ -55,8 +55,8 @@ public class Product {
     @ManyToMany
     @JoinTable(
             name = CategoryProductConstant.TABLE_NAME,
-            joinColumns = @JoinColumn(name = CategoryProductConstant.CATEGORY_ID),
-            inverseJoinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID)
+            joinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID),
+            inverseJoinColumns = @JoinColumn(name = CategoryProductConstant.CATEGORY_ID)
     )
     private Set<Category> categories;
 
@@ -78,6 +78,9 @@ public class Product {
         this.categories = categories;
         this.market = market;
         this.productPhoto = productPhoto;
+    }
+
+    public Product() {
     }
 
     public String getProductId() {
