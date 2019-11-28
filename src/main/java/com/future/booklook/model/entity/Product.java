@@ -68,6 +68,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<Library> libraries;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private Set<TransactionDetail> transactionDetails;
+
     public Product(String title, String author, String publisher, String SKU, String description, Long price, Set<Category> categories, Market market, String productPhoto) {
         this.title = title;
         this.author = author;
@@ -185,5 +189,21 @@ public class Product {
 
     public void setWishlists(Set<Wishlist> wishlists) {
         this.wishlists = wishlists;
+    }
+
+    public Set<Library> getLibraries() {
+        return libraries;
+    }
+
+    public void setLibraries(Set<Library> libraries) {
+        this.libraries = libraries;
+    }
+
+    public Set<TransactionDetail> getTransactionDetails() {
+        return transactionDetails;
+    }
+
+    public void setTransactionDetails(Set<TransactionDetail> transactionDetails) {
+        this.transactionDetails = transactionDetails;
     }
 }

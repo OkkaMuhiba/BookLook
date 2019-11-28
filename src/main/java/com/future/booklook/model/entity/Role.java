@@ -1,6 +1,7 @@
 package com.future.booklook.model.entity;
 
 import com.future.booklook.model.constants.RoleConstant;
+import com.future.booklook.model.entity.properties.RoleName;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;

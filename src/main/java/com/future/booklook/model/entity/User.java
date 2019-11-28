@@ -62,6 +62,10 @@ public class User{
     @OneToMany(mappedBy = "user")
     private Set<Library> libraries;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private Set<Transaction> transactions;
+
     public User(String name, String username, String email, String password) {
         this.name = name;
         this.username = username;

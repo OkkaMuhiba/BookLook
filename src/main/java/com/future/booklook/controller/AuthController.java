@@ -2,7 +2,7 @@ package com.future.booklook.controller;
 
 import com.future.booklook.exception.AppException;
 import com.future.booklook.model.entity.Role;
-import com.future.booklook.model.entity.RoleName;
+import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.JwtAuthenticationResponse;
