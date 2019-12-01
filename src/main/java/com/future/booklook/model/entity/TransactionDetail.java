@@ -27,6 +27,9 @@ public class TransactionDetail {
     @JoinColumn(name = TransactionDetailConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
+    public TransactionDetail() {
+    }
+
     public String getTransactionDetailId() {
         return transactionDetailId;
     }

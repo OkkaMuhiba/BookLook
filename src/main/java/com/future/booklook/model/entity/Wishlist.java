@@ -33,7 +33,10 @@ public class Wishlist {
     @JoinColumn(name = WishlistConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
-    public String getWishlistId() {
+     public Wishlist() {
+     }
+
+     public String getWishlistId() {
         return wishlistId;
     }
 

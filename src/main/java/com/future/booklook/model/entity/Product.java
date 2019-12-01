@@ -72,6 +72,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<TransactionDetail> transactionDetails;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private Set<BasketDetail> basketDetails;
+
     public Product(String title, String author, String publisher, String SKU, String description, Long price, Set<Category> categories, Market market, String productPhoto) {
         this.title = title;
         this.author = author;

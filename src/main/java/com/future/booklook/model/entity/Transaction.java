@@ -34,6 +34,9 @@ public class Transaction {
     @OneToMany(mappedBy = "transaction")
     private Set<TransactionDetail> transactionDetails;
 
+    public Transaction() {
+    }
+
     public String getUserId() {
         return userId;
     }

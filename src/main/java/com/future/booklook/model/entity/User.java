@@ -34,8 +34,8 @@ public class User{
     @Column(name = UserConstant.NUMBER_PHONE)
     private String numberPhone;
 
-    @Column(name = UserConstant.PHOTO_USER)
-    private String photoUser;
+    @Column(name = UserConstant.USER_PHOTO)
+    private String userPhoto;
 
     @Column(name = UserConstant.CREATED_AT)
     private Date createdAt;
@@ -65,6 +65,10 @@ public class User{
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Transaction> transactions;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    private Basket basket;
 
     public User(String name, String username, String email, String password) {
         this.name = name;
@@ -123,12 +127,12 @@ public class User{
         this.numberPhone = numberPhone;
     }
 
-    public String getPhotoUser() {
-        return photoUser;
+    public String getUserPhoto() {
+        return userPhoto;
     }
 
-    public void setPhotoUser(String photoUser) {
-        this.photoUser = photoUser;
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
     }
 
     public Date getCreatedAt() {
