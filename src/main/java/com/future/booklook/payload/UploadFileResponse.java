@@ -1,4 +1,4 @@
-package com.future.booklook.exception;
+package com.future.booklook.payload;
 
 public class UploadFileResponse {
     private String fileName;

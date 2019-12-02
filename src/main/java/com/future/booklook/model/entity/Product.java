@@ -40,6 +40,9 @@ public class Product {
     @Column(name = ProductConstant.PRODUCT_PHOTO)
     private String productPhoto;
 
+    @Column(name = ProductConstant.PRODUCT_FILE)
+    private String productFile;
+
     @Column(name = ProductConstant.CREATED_AT)
     private Date createdAt;
 
@@ -153,6 +156,22 @@ public class Product {
 
     public void setProductPhoto(String productPhoto) {
         this.productPhoto = productPhoto;
+    }
+
+    public String getProductFile() {
+        return productFile;
+    }
+
+    public void setProductFile(String productFile) {
+        this.productFile = productFile;
+    }
+
+    public Set<BasketDetail> getBasketDetails() {
+        return basketDetails;
+    }
+
+    public void setBasketDetails(Set<BasketDetail> basketDetails) {
+        this.basketDetails = basketDetails;
     }
 
     public Date getCreatedAt() {

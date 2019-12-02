@@ -46,6 +46,7 @@ public class ProductController {
             @RequestParam("sku") String sku,
             @RequestParam("price") String price,
             @RequestParam("picture") MultipartFile picture,
+            @RequestParam("book") MultipartFile book,
             @RequestParam("categories") String categories
     ){
         String userId = getUserPrincipal().getUserId();
@@ -58,8 +59,8 @@ public class ProductController {
             categoriesSet.add(this.categoryService.findByCategoryName(category));
         }
 
-        MultipartFile file = picture;
-        String fileName = fileStorageService.storeFile(file, "products");
+        MultipartFile pictureFile = picture;
+        String fileName = fileStorageService.storeFile(pictureFile, "products");
         String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/products/")
                 .path(fileName)
