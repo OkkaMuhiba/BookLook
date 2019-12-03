@@ -59,9 +59,18 @@ public class ProductController {
             categoriesSet.add(this.categoryService.findByCategoryName(category));
         }
 
+        String fileName = "";
+
+        MultipartFile bookFile = book;
+        fileName = fileStorageService.storeFile(bookFile, "books");
+        String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/files/books/")
+                .path(fileName)
+                .toUriString();
+
         MultipartFile pictureFile = picture;
-        String fileName = fileStorageService.storeFile(pictureFile, "products");
-        String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+        fileName = fileStorageService.storeFile(pictureFile, "products");
+        String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/products/")
                 .path(fileName)
                 .toUriString();
@@ -75,7 +84,7 @@ public class ProductController {
                 Long.parseLong(price),
                 categoriesSet,
                 market,
-                fileUri
+                photoUri
         );
 
         productService.save(product);
