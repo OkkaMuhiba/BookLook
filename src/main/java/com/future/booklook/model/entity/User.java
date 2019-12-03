@@ -2,11 +2,13 @@ package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.UserConstant;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Entity
@@ -38,10 +40,12 @@ public class User{
     private String userPhoto;
 
     @Column(name = UserConstant.CREATED_AT)
-    private Date createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
 
     @Column(name = UserConstant.UPDATED_AT)
-    private Date updatedAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
@@ -70,11 +74,13 @@ public class User{
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     private Basket basket;
 
-    public User(String name, String username, String email, String password) {
+    public User(String name, String username, String email, String password, String numberPhone, String userPhoto) {
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.numberPhone = numberPhone;
+        this.userPhoto = userPhoto;
     }
 
     public User() { }
@@ -135,19 +141,19 @@ public class User{
         this.userPhoto = userPhoto;
     }
 
-    public Date getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Timestamp getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
 

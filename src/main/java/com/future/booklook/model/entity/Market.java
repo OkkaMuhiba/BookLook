@@ -6,7 +6,7 @@ import com.future.booklook.model.constants.UserConstant;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
@@ -35,10 +35,10 @@ public class Market {
     private String marketSKU;
 
     @Column(name = MarketConstant.CREATED_AT)
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @Column(name = MarketConstant.UPDATED_AT)
-    private Date updatedAt;
+    private Timestamp updatedAt;
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
@@ -49,12 +49,13 @@ public class Market {
     @OneToMany(mappedBy = "market", fetch = FetchType.LAZY)
     private Set<Product> products;
 
-    public Market(String marketName, String marketBio, String marketSKU, String userID, User user) {
+    public Market(String marketName, String marketBio, String marketSKU, String userID, User user, String marketPhoto) {
         this.marketName = marketName;
         this.marketBio = marketBio;
         this.marketSKU = marketSKU;
         this.userID = userID;
         this.user = user;
+        this.marketPhoto = marketPhoto;
     }
 
     public Market() {
@@ -109,19 +110,19 @@ public class Market {
         this.marketSKU = marketSKU;
     }
 
-    public Date getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Timestamp getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
 

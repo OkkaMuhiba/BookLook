@@ -6,4 +6,6 @@ public class TransactionConstant {
     public static final String CHECKOUT = "checkout";
     public static final String TRANSFER_CONFIRM = "transaction_confirm";
     public static final String USER_FK = "user_fk";
+    public static final String CREATED_AT = "created_at";
+    public static final String UPDATED_AT = "updated_at";
 }

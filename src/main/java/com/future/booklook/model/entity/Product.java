@@ -7,7 +7,7 @@ import com.future.booklook.model.constants.ProductConstant;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
@@ -44,10 +44,10 @@ public class Product {
     private String productFile;
 
     @Column(name = ProductConstant.CREATED_AT)
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @Column(name = ProductConstant.UPDATED_AT)
-    private Date updatedAt;
+    private Timestamp updatedAt;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -175,19 +175,19 @@ public class Product {
         this.basketDetails = basketDetails;
     }
 
-    public Date getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Timestamp getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
 

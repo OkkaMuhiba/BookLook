@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.TransactionConstant;
 import com.future.booklook.model.constants.UserConstant;
 import com.future.booklook.model.entity.properties.TransferConfirm;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
@@ -24,6 +27,14 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column(name = TransactionConstant.TRANSFER_CONFIRM)
     private TransferConfirm transferConfirm;
+
+    @Column(name = TransactionConstant.CREATED_AT)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @Column(name = TransactionConstant.UPDATED_AT)
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,6 +70,22 @@ public class Transaction {
 
     public void setTransferConfirm(TransferConfirm transferConfirm) {
         this.transferConfirm = transferConfirm;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public User getUser() {
