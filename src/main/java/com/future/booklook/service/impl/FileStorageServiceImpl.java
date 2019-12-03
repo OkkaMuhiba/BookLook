@@ -29,7 +29,7 @@ public class FileStorageServiceImpl {
         try {
             Path[] paths = {
                     this.fileStorageLocation.resolve(Paths.get("products")),
-                    this.fileStorageLocation.resolve(Paths.get("profiles")),
+                    this.fileStorageLocation.resolve(Paths.get("users")),
                     this.fileStorageLocation.resolve(Paths.get("markets")),
                     this.fileStorageLocation.resolve(Paths.get("books"))
             };

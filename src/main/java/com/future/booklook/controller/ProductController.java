@@ -84,7 +84,8 @@ public class ProductController {
                 Long.parseLong(price),
                 categoriesSet,
                 market,
-                photoUri
+                photoUri,
+                bookUri
         );
 
         productService.save(product);
