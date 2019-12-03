@@ -79,7 +79,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<BasketDetail> basketDetails;
 
-    public Product(String title, String author, String publisher, String SKU, String description, Long price, Set<Category> categories, Market market, String productPhoto) {
+    public Product(String title, String author, String publisher, String SKU, String description, Long price, Set<Category> categories, Market market, String productPhoto, String productFile) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
@@ -89,6 +89,7 @@ public class Product {
         this.categories = categories;
         this.market = market;
         this.productPhoto = productPhoto;
+        this.productFile = productFile;
     }
 
     public Product() {
