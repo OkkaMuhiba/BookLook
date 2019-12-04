@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.CategoryProductConstant;
 import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.ProductConstant;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -44,9 +46,11 @@ public class Product {
     private String productFile;
 
     @Column(name = ProductConstant.CREATED_AT)
+    @CreationTimestamp
     private Timestamp createdAt;
 
     @Column(name = ProductConstant.UPDATED_AT)
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     @JsonIgnore

@@ -3,7 +3,9 @@ package com.future.booklook.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.UserConstant;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -35,9 +37,11 @@ public class Market {
     private String marketSKU;
 
     @Column(name = MarketConstant.CREATED_AT)
+    @CreationTimestamp
     private Timestamp createdAt;
 
     @Column(name = MarketConstant.UPDATED_AT)
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     @JsonIgnore
