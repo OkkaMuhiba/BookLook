@@ -7,6 +7,7 @@ import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.MarketServiceImpl;
 import com.future.booklook.service.impl.UserServiceImpl;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@Api
 @RestController
 @RequestMapping("/api/markets")
 public class MarketController {
@@ -51,7 +53,8 @@ public class MarketController {
                 marketBio,
                 marketSKU,
                 userId,
-                user
+                user,
+                photoUri
         );
 
         marketService.save(market);

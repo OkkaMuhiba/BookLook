@@ -11,6 +11,7 @@ import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.repository.UserRepository;
 import com.future.booklook.security.JwtTokenProvider;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
 
+@Api
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -70,6 +72,7 @@ public class AuthController {
             @RequestParam("username") String username,
             @RequestParam("email") String email,
             @RequestParam("password") String password,
+            @RequestParam("numberPhone") String numberPhone,
             @RequestParam("photo") MultipartFile photo
             ) {
         if (userRepository.existsByUsername(username)) {
@@ -91,7 +94,7 @@ public class AuthController {
                 .toUriString();
 
         // Creating user's account
-        User user = new User(name, username, email, password);
+        User user = new User(name, username, email, password, numberPhone, photoUri);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

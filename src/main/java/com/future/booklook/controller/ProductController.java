@@ -7,6 +7,7 @@ import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.HashSet;
 import java.util.Set;
 
+@Api
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
