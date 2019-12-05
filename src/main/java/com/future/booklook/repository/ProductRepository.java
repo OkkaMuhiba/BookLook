@@ -10,4 +10,6 @@ import java.util.Set;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
     Set<Product> findProductsByCategories(Set<Category> categories);
+
+    Product findByProductId(String productId);
 }

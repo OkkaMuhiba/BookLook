@@ -21,4 +21,8 @@ public class ProductServiceImpl implements ProductService {
     public Set<Product> findProductsByCategories(Set<Category> categories){
         return productRepository.findProductsByCategories(categories);
     }
+
+    public Product findByProductId(String productId){
+        return productRepository.findByProductId(productId);
+    }
 }

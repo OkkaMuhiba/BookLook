@@ -5,6 +5,7 @@ import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
+import com.future.booklook.payload.EditProduct;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
@@ -103,6 +104,47 @@ public class ProductController {
         Set<Product> products = productService.findProductsByCategories(categoriesSet);
 
         return products;
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<?> editProduct(@RequestBody EditProduct editProduct){
+        Product product = productService.findByProductId(editProduct.getProductId());
+
+        product.setPrice(Long.parseLong(editProduct.getPrice()));
+        product.setDescription(editProduct.getDescription());
+
+        productService.save(product);
+        return new ResponseEntity(new ApiResponse(true, "Product has been Edited successfully"), HttpStatus.OK);
+    }
+
+    @PutMapping("/edit/photo")
+    public ResponseEntity<?> editPhotoProduct(@RequestParam String productId, @RequestParam MultipartFile picture){
+        Product product = productService.findByProductId(productId);
+
+        MultipartFile pictureFile = picture;
+        String fileName = fileStorageService.storeFile(pictureFile, "products");
+        String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/files/products/")
+                .path(fileName)
+                .toUriString();
+
+        product.setProductPhoto(photoUri);
+        return new ResponseEntity(new ApiResponse(true, "Product Photo has been Edited successfully"), HttpStatus.OK);
+    }
+
+    @PutMapping("/edit/book")
+    public ResponseEntity<?> editFileProduct(@RequestParam String productId, @RequestParam MultipartFile book){
+        Product product = productService.findByProductId(productId);
+
+        MultipartFile pictureFile = book;
+        String fileName = fileStorageService.storeFile(pictureFile, "books");
+        String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/files/books/")
+                .path(fileName)
+                .toUriString();
+
+        product.setProductPhoto(bookUri);
+        return new ResponseEntity(new ApiResponse(true, "Book file has been Edited successfully"), HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {
