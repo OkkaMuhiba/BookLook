@@ -60,7 +60,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/users/**").hasRole("USER")
+                .antMatchers(
+                        "/api/users/**",
+                        "/api/markets/edit/**",
+                        "/api/products/edit/**"
+                ).hasRole("USER")
                 .anyRequest().permitAll();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

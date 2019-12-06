@@ -74,11 +74,11 @@ public class UserController {
         String userId = getUserPrincipal().getUserId();
         User user = userService.findByUserId(userId);
 
-        if(user.getPassword() != passwordEncoder.encode(editUserPassword.getOldPassword())){
+        if(!(passwordEncoder.matches(editUserPassword.getOldPassword(), user.getPassword()))){
             return new ResponseEntity(new ApiResponse(false, "Old password is wrong"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if(user.getPassword() == passwordEncoder.encode(editUserPassword.getNewPassword())){
+        if(passwordEncoder.matches(editUserPassword.getNewPassword(), user.getPassword())){
             return new ResponseEntity(new ApiResponse(false, "Your new password is same as your old password"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
