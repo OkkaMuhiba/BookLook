@@ -3,6 +3,7 @@ package com.future.booklook.controller;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.EditProfile;
+import com.future.booklook.payload.EditUserPassword;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.UserServiceImpl;
@@ -69,22 +70,19 @@ public class UserController {
     }
 
     @PutMapping("/edit/password")
-    public ResponseEntity<?> editPassword(
-            @RequestParam String oldPassword,
-            @RequestParam String newPassword
-    ){
+    public ResponseEntity<?> editPassword(@RequestBody EditUserPassword editUserPassword){
         String userId = getUserPrincipal().getUserId();
         User user = userService.findByUserId(userId);
 
-        if(user.getPassword() != passwordEncoder.encode(oldPassword)){
-            return new ResponseEntity(new ApiResponse(false, "Old password is wrong"), HttpStatus.OK);
+        if(user.getPassword() != passwordEncoder.encode(editUserPassword.getOldPassword())){
+            return new ResponseEntity(new ApiResponse(false, "Old password is wrong"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if(user.getPassword() == passwordEncoder.encode(newPassword)){
-            return new ResponseEntity(new ApiResponse(false, "Your new password is same as your old password"), HttpStatus.OK);
+        if(user.getPassword() == passwordEncoder.encode(editUserPassword.getNewPassword())){
+            return new ResponseEntity(new ApiResponse(false, "Your new password is same as your old password"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(passwordEncoder.encode(editUserPassword.getNewPassword()));
         userService.save(user);
 
         return new ResponseEntity(new ApiResponse(true, "Your password has been changed"), HttpStatus.OK);
