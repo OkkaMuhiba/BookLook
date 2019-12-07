@@ -6,6 +6,7 @@ public class ProductConstant {
     public static final String TITLE = "title";
     public static final String AUTHOR = "author";
     public static final String PUBLISHER = "publisher";
+    public static final String ISBN = "ISBN";
     public static final String SKU = "SKU";
     public static final String DESCRIPTION = "description";
     public static final String PRICE = "price";
