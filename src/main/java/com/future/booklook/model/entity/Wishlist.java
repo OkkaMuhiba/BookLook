@@ -22,13 +22,18 @@ public class Wishlist {
     @JoinColumn(name = WishlistConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
     private User user;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = WishlistConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
-     public Wishlist() {
+     public Wishlist(User user, Product product) {
+         this.user = user;
+         this.product = product;
      }
+
+     public Wishlist() {
+
+    }
 
      public String getWishlistId() {
         return wishlistId;
