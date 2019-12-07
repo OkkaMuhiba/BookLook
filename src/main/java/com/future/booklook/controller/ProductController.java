@@ -6,6 +6,7 @@ import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.EditProduct;
+import com.future.booklook.payload.ProductPageResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
@@ -106,6 +107,14 @@ public class ProductController {
         Set<Product> products = productService.findProductsByCategories(categoriesSet);
 
         return products;
+    }
+
+    @GetMapping("/{sku}")
+    public ProductPageResponse getProductFromSKU(@PathVariable String sku){
+        Product product = productService.findBySKU(sku);
+        String marketName = product.getMarket().getMarketName();
+
+        return new ProductPageResponse(product, marketName);
     }
 
     @PutMapping("/edit")

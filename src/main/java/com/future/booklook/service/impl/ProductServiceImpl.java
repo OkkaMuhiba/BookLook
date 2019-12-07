@@ -25,4 +25,8 @@ public class ProductServiceImpl implements ProductService {
     public Product findByProductId(String productId){
         return productRepository.findByProductId(productId);
     }
+
+    public Product findBySKU(String sku){
+        return productRepository.findBySku(sku);
+    }
 }
