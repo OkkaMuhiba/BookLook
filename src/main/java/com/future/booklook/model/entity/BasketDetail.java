@@ -22,10 +22,14 @@ public class BasketDetail {
     @JoinColumn(name = BasketDetailConstant.BASKET_FK, referencedColumnName = BasketConstant.BASKET_ID)
     private Basket basket;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = BasketDetailConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
+
+    public BasketDetail(Basket basket, Product product) {
+        this.basket = basket;
+        this.product = product;
+    }
 
     public BasketDetail() {
     }

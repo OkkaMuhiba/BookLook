@@ -21,7 +21,7 @@ public class CategoryController {
     @PostMapping("/create")
     public ResponseEntity<?> createCategory(@RequestBody CreateCategory category){
         categoryService.save(new Category(category.getCategoryName()));
-        return new ResponseEntity(new ApiResponse(true, "Category created successfully"), HttpStatus.OK);
+        return new ResponseEntity(new ApiResponse(true, "Category created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("")

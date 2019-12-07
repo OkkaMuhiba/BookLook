@@ -95,7 +95,7 @@ public class ProductController {
         );
 
         productService.save(product);
-        return new ResponseEntity(new ApiResponse(true, "Product created successfully"), HttpStatus.OK);
+        return new ResponseEntity(new ApiResponse(true, "Product created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("/{categoryName}")
@@ -110,11 +110,11 @@ public class ProductController {
     }
 
     @GetMapping("/{sku}")
-    public ProductPageResponse getProductFromSKU(@PathVariable String sku){
+    public ResponseEntity<?> getProductFromSKU(@PathVariable String sku){
         Product product = productService.findBySKU(sku);
         String marketName = product.getMarket().getMarketName();
 
-        return new ProductPageResponse(product, marketName);
+        return new ResponseEntity(new ProductPageResponse(product, marketName), HttpStatus.OK);
     }
 
     @PutMapping("/edit")

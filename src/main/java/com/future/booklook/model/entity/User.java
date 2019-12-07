@@ -188,4 +188,20 @@ public class User{
     public void setLibraries(Set<Library> libraries) {
         this.libraries = libraries;
     }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public Basket getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Basket basket) {
+        this.basket = basket;
+    }
 }

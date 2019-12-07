@@ -135,19 +135,19 @@ public class Product {
         this.publisher = publisher;
     }
 
-    public String getisbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setisbn(String isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 
-    public String getsku() {
+    public String getSku() {
         return sku;
     }
 
-    public void setsku(String sku) {
+    public void setSku(String sku) {
         this.sku = sku;
     }
 

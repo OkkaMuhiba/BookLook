@@ -26,6 +26,10 @@ public class Basket {
     @OneToMany(mappedBy = "basket")
     private Set<BasketDetail> basketDetails;
 
+    public Basket(User user) {
+        this.user = user;
+    }
+
     public Basket() {
     }
 

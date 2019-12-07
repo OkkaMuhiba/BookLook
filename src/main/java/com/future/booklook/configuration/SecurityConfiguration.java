@@ -63,7 +63,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/api/users/**",
                         "/api/markets/edit/**",
-                        "/api/products/edit/**"
+                        "/api/products/edit/**",
+                        "api/buckets/**"
                 ).hasRole("USER")
                 .anyRequest().permitAll();
 

@@ -59,7 +59,7 @@ public class MarketController {
         );
 
         marketService.save(market);
-        return new ResponseEntity(new ApiResponse(true, "Market created successfully"), HttpStatus.OK);
+        return new ResponseEntity(new ApiResponse(true, "Market created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("")
