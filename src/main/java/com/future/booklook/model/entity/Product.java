@@ -30,6 +30,9 @@ public class Product {
     @Column(name = ProductConstant.PUBLISHER)
     private String publisher;
 
+    @Column(name = ProductConstant.ISBN)
+    private String ISBN;
+
     @Column(name = ProductConstant.SKU)
     private String SKU;
 
@@ -83,10 +86,11 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<BasketDetail> basketDetails;
 
-    public Product(String title, String author, String publisher, String SKU, String description, Long price, Set<Category> categories, Market market, String productPhoto, String productFile) {
+    public Product(String title, String author, String publisher, String ISBN, String SKU, String description, Long price, Set<Category> categories, Market market, String productPhoto, String productFile) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
+        this.ISBN = ISBN;
         this.SKU = SKU;
         this.price = price;
         this.description = description;
@@ -129,6 +133,14 @@ public class Product {
 
     public void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+
+    public String getISBN() {
+        return ISBN;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
     }
 
     public String getSKU() {
