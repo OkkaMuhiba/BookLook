@@ -98,7 +98,7 @@ public class ProductController {
         return new ResponseEntity(new ApiResponse(true, "Product created successfully"), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{categoryName}")
+    @GetMapping("/category/{categoryName}")
     public Set<Product> getProductsFromCategory(@PathVariable String categoryName){
         Category category = categoryService.findByCategoryName(categoryName);
         Set<Category> categoriesSet = new HashSet<>();

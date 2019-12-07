@@ -7,6 +7,7 @@ import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.JwtAuthenticationResponse;
 import com.future.booklook.payload.LoginRequest;
+import com.future.booklook.payload.SignUpRequest;
 import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.repository.UserRepository;
 import com.future.booklook.security.JwtTokenProvider;
@@ -67,34 +68,25 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(
-            @RequestParam("name") String name,
-            @RequestParam("username") String username,
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
-            @RequestParam("numberPhone") String numberPhone,
-            @RequestParam("photo") MultipartFile photo
-            ) {
-        if (userRepository.existsByUsername(username)) {
+    public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        String fileName = "";
-        MultipartFile pictureFile = photo;
-        fileName = fileStorageService.storeFile(pictureFile, "users");
-        String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/files/users/")
-                .path(fileName)
-                .toUriString();
-
         // Creating user's account
-        User user = new User(name, username, email, password, numberPhone, photoUri);
+        User user = new User(
+                signUpRequest.getName(),
+                signUpRequest.getUsername(),
+                signUpRequest.getEmail(),
+                signUpRequest.getPassword(),
+                signUpRequest.getNumberPhone()
+        );
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

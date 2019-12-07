@@ -53,13 +53,12 @@ public class Market {
     @OneToMany(mappedBy = "market", fetch = FetchType.LAZY)
     private Set<Product> products;
 
-    public Market(String marketName, String marketBio, String marketSKU, String userID, User user, String marketPhoto) {
+    public Market(String marketName, String marketBio, String marketSKU, String userID, User user) {
         this.marketName = marketName;
         this.marketBio = marketBio;
         this.marketSKU = marketSKU;
         this.userID = userID;
         this.user = user;
-        this.marketPhoto = marketPhoto;
     }
 
     public Market() {

@@ -17,12 +17,6 @@ public class Wishlist {
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String wishlistId;
 
-    @Column(name = WishlistConstant.USER_ID)
-    private String userId;
-
-    @Column(name = WishlistConstant.PRODUCT_ID)
-    private String productId;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = WishlistConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
@@ -42,22 +36,6 @@ public class Wishlist {
 
     public void setWishlistId(String wishlistId) {
         this.wishlistId = wishlistId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
     }
 
     public User getUser() {

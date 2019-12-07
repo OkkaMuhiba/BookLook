@@ -3,6 +3,7 @@ package com.future.booklook.controller;
 import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
+import com.future.booklook.payload.CreateMarketRequest;
 import com.future.booklook.payload.EditMarket;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
@@ -32,30 +33,16 @@ public class MarketController {
     FileStorageServiceImpl fileStorageService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createMarket(
-            @RequestParam("marketName") String marketName,
-            @RequestParam("marketSKU") String marketSKU,
-            @RequestParam("marketBio") String marketBio,
-            @RequestParam("marketPhoto") MultipartFile marketPhoto
-    ){
+    public ResponseEntity<?> createMarket(@RequestBody CreateMarketRequest marketRequest){
         String userId = getUserPrincipal().getUserId();
         User user = userService.findByUserId(userId);
 
-        String fileName = "";
-        MultipartFile pictureFile = marketPhoto;
-        fileName = fileStorageService.storeFile(pictureFile, "markets");
-        String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/files/markets/")
-                .path(fileName)
-                .toUriString();
-
         Market market = new Market(
-                marketName,
-                marketBio,
-                marketSKU,
+                marketRequest.getMarketName(),
+                marketRequest.getMarketBio(),
+                marketRequest.getMarketSKU(),
                 userId,
-                user,
-                photoUri
+                user
         );
 
         marketService.save(market);
