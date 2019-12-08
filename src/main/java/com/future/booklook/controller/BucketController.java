@@ -5,6 +5,7 @@ import com.future.booklook.model.entity.BasketDetail;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
+import com.future.booklook.payload.BucketRequest;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.BasketDetailServiceImpl;
 import com.future.booklook.service.impl.BasketServiceImpl;
@@ -37,10 +38,13 @@ public class BucketController {
     ProductServiceImpl productService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addProductIntoBucket(@RequestBody String productId){
+    public ResponseEntity<?> addProductIntoBucket(@RequestBody BucketRequest bucketRequest){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
-        Product product = productService.findByProductId(productId);
+        if(!(productService.existsByProductId(bucketRequest.getProductId()))){
+            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
+        Product product = productService.findByProductId(bucketRequest.getProductId());
         if(basketService.existsByUser(user)){
             Basket basket = basketService.findByUser(user);
             if(basketDetailService.existsByBasketAndProduct(basket, product)){
@@ -63,6 +67,28 @@ public class BucketController {
         Set<Product> products = basketDetailService.findAllProductByBasket(basket);
 
         return new ResponseEntity(products, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteProductFromBasket(@RequestBody BucketRequest bucketRequest){
+        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        if(!(productService.existsByProductId(bucketRequest.getProductId()))){
+            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        Product product = productService.findByProductId(bucketRequest.getProductId());
+        if(basketService.existsByUser(user)){
+            Basket basket = basketService.findByUser(user);
+            if(basketDetailService.existsByBasketAndProduct(basket, product)){
+                basketDetailService.deleteByBasketAndProduct(basket, product);
+            } else {
+                return new ResponseEntity(new ApiResponse(false, "Product does not exist in your basket"), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+        } else {
+            return new ResponseEntity(new ApiResponse(false, "There's no product on your basket"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        return new ResponseEntity(new ApiResponse(true, "Product has been removed from basket"), HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {

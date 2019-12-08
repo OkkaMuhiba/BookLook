@@ -34,4 +34,8 @@ public class BasketDetailServiceImpl implements BasketDetailService {
 
         return products;
     }
+
+    public void deleteByBasketAndProduct(Basket basket, Product product){
+        basketDetailRepository.deleteByBasketAndProduct(basket, product);
+    }
 }

@@ -6,6 +6,7 @@ import com.future.booklook.model.entity.Wishlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Repository
@@ -14,5 +15,6 @@ public interface WishlistRepository extends JpaRepository<Wishlist, String> {
 
     Boolean existsByUserAndProduct(User user, Product product);
 
+    @Transactional
     void deleteByUserAndProduct(User user, Product product);
 }

@@ -4,6 +4,7 @@ import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.model.entity.Wishlist;
 import com.future.booklook.payload.ApiResponse;
+import com.future.booklook.payload.WishlistRequest;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.ProductServiceImpl;
 import com.future.booklook.service.impl.UserServiceImpl;
@@ -32,11 +33,14 @@ public class WishlistController {
     private ProductServiceImpl productService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addProductIntoWishlist(@RequestBody String productId){
+    public ResponseEntity<?> addProductIntoWishlist(@RequestBody WishlistRequest wishlistRequest){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
-        Product product = productService.findByProductId(productId);
-
-        wishlistService.save(new Wishlist(user, product));
+        if(productService.existsByProductId(wishlistRequest.getProductId())){
+            Product product = productService.findByProductId(wishlistRequest.getProductId());
+            wishlistService.save(new Wishlist(user, product));
+        } else {
+            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
         return new ResponseEntity(new ApiResponse(true, "Your product has been added into wishlist"), HttpStatus.CREATED);
     }
@@ -50,11 +54,11 @@ public class WishlistController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteProductFromWishlist(@RequestBody String productId){
+    public ResponseEntity<?> deleteProductFromWishlist(@RequestBody WishlistRequest wishlistRequest){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
 
-        if(productService.existsByProductId(productId)){
-            Product product = productService.findByProductId(productId);
+        if(productService.existsByProductId(wishlistRequest.getProductId())){
+            Product product = productService.findByProductId(wishlistRequest.getProductId());
             if(wishlistService.existsByUserAndProduct(user, product)){
                 wishlistService.deleteByUserAndProduct(user, product);
             } else {

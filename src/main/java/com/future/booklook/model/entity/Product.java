@@ -1,11 +1,13 @@
 package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.future.booklook.model.constants.CategoryProductConstant;
 import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.ProductConstant;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Proxy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -14,6 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = ProductConstant.TABLE_NAME)
+@Proxy(lazy = false)
 public class Product {
     @Id
     @Column(name = ProductConstant.PRODUCT_ID)
