@@ -109,10 +109,10 @@ public class ProductController {
         return products;
     }
 
-    @GetMapping("/{sku}")
-    public ResponseEntity<?> getProductFromSKU(@PathVariable String sku){
-        Product product = productService.findBySKU(sku);
-        String marketName = product.getMarket().getMarketName();
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> getProductFromSKU(@PathVariable String productId){
+        Product product = productService.findByProductId(productId);
+        String marketName = marketService.findMarketByProduct(product).getMarketName();
 
         return new ResponseEntity(new ProductPageResponse(product, marketName), HttpStatus.OK);
     }

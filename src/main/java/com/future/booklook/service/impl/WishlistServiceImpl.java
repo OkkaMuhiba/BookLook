@@ -8,6 +8,7 @@ import com.future.booklook.service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -19,8 +20,15 @@ public class WishlistServiceImpl implements WishlistService {
         return wishlistRepository.save(wishlist);
     }
 
-    public Set<Wishlist> findAllByUser(User user){
-        return wishlistRepository.findAllByUser(user);
+    public Set<Product> findAllProductInWishlistByUser(User user){
+        Set<Wishlist> wishlists =  wishlistRepository.findAllByUser(user);
+        Set<Product> products = new HashSet<>();
+
+        for(Wishlist wishlist : wishlists){
+            products.add(wishlist.getProduct());
+        }
+
+        return products;
     }
 
     public Boolean existsByUserAndProduct(User user, Product product){

@@ -8,6 +8,7 @@ import com.future.booklook.service.BasketDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -23,7 +24,14 @@ public class BasketDetailServiceImpl implements BasketDetailService {
         return basketDetailRepository.existsByBasketAndProduct(basket, product);
     }
 
-    public Set<BasketDetail> findAllByBasket(Basket basket){
-        return basketDetailRepository.findAllByBasket(basket);
+    public Set<Product> findAllProductByBasket(Basket basket){
+        Set<BasketDetail> basketDetails = basketDetailRepository.findAllByBasket(basket);
+        Set<Product> products = new HashSet<>();
+
+        for(BasketDetail basketDetail : basketDetails){
+            products.add(basketDetail.getProduct());
+        }
+
+        return products;
     }
 }

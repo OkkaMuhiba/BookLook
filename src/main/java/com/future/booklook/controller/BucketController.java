@@ -60,9 +60,9 @@ public class BucketController {
     public ResponseEntity<?> getAllProductInBasket(){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Basket basket = user.getBasket();
-        Set<BasketDetail> basketDetails = basketDetailService.findAllByBasket(basket);
+        Set<Product> products = basketDetailService.findAllProductByBasket(basket);
 
-        return new ResponseEntity(basketDetails, HttpStatus.OK);
+        return new ResponseEntity(products, HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {

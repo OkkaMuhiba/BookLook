@@ -44,9 +44,9 @@ public class WishlistController {
     @GetMapping("")
     public ResponseEntity<?> showAllWishlistFromUser(){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
-        Set<Wishlist> wishlists = wishlistService.findAllByUser(user);
+        Set<Product> products = wishlistService.findAllProductInWishlistByUser(user);
 
-        return new ResponseEntity(wishlists, HttpStatus.OK);
+        return new ResponseEntity(products, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
