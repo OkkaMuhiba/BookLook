@@ -6,7 +6,7 @@ import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.EditProduct;
-import com.future.booklook.payload.ProductPageResponse;
+import com.future.booklook.payload.ProductInfoResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
@@ -112,9 +112,11 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ResponseEntity<?> getProductFromSKU(@PathVariable String productId){
         Product product = productService.findByProductId(productId);
-        String marketName = marketService.findMarketByProduct(product).getMarketName();
+        Market market = marketService.findMarketByProduct(product);
+        String marketId = market.getMarketId();
+        String marketName = market.getMarketName();
 
-        return new ResponseEntity(new ProductPageResponse(product, marketName), HttpStatus.OK);
+        return new ResponseEntity(new ProductInfoResponse(product, marketId, marketName), HttpStatus.OK);
     }
 
     @PutMapping("/edit")
@@ -156,6 +158,14 @@ public class ProductController {
 
         product.setProductPhoto(bookUri);
         return new ResponseEntity(new ApiResponse(true, "Book file has been Edited successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping("/market/{marketId}")
+    public ResponseEntity<?> allProductFromMarket(@PathVariable String marketId){
+        Market market = marketService.findByMarketId(marketId);
+        Set<Product> products = productService.findAllByMarket(market);
+
+        return new ResponseEntity(products, HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {

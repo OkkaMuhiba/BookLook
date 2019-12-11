@@ -1,6 +1,7 @@
 package com.future.booklook.service.impl;
 
 import com.future.booklook.model.entity.Category;
+import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.repository.ProductRepository;
 import com.future.booklook.service.ProductService;
@@ -32,5 +33,9 @@ public class ProductServiceImpl implements ProductService {
 
     public Boolean existsByProductId(String productId){
         return productRepository.existsByProductId(productId);
+    }
+
+    public Set<Product> findAllByMarket(Market market){
+        return productRepository.findAllByMarket(market);
     }
 }

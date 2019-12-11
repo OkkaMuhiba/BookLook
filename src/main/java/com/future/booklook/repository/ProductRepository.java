@@ -1,6 +1,7 @@
 package com.future.booklook.repository;
 
 import com.future.booklook.model.entity.Category;
+import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     Product findBySku(String sku);
 
     Boolean existsByProductId(String productId);
+
+    Set<Product> findAllByMarket(Market market);
 }

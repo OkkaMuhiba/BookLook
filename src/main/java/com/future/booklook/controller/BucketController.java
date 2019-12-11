@@ -1,16 +1,11 @@
 package com.future.booklook.controller;
 
-import com.future.booklook.model.entity.Basket;
-import com.future.booklook.model.entity.BasketDetail;
-import com.future.booklook.model.entity.Product;
-import com.future.booklook.model.entity.User;
+import com.future.booklook.model.entity.*;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.BucketRequest;
+import com.future.booklook.payload.ProductInfoResponse;
 import com.future.booklook.security.UserPrincipal;
-import com.future.booklook.service.impl.BasketDetailServiceImpl;
-import com.future.booklook.service.impl.BasketServiceImpl;
-import com.future.booklook.service.impl.ProductServiceImpl;
-import com.future.booklook.service.impl.UserServiceImpl;
+import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Api
@@ -36,6 +32,9 @@ public class BucketController {
 
     @Autowired
     ProductServiceImpl productService;
+
+    @Autowired
+    MarketServiceImpl marketService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProductIntoBucket(@RequestBody BucketRequest bucketRequest){
@@ -65,8 +64,13 @@ public class BucketController {
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Basket basket = user.getBasket();
         Set<Product> products = basketDetailService.findAllProductByBasket(basket);
+        Set<ProductInfoResponse> productInfoRespons = new HashSet<>();
+        for(Product product : products){
+            Market market = marketService.findMarketByProduct(product);
+            productInfoRespons.add(new ProductInfoResponse(product, market.getMarketId(), market.getMarketName()));
+        }
 
-        return new ResponseEntity(products, HttpStatus.OK);
+        return new ResponseEntity(productInfoRespons, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")

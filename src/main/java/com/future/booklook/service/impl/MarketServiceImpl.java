@@ -30,4 +30,8 @@ public class MarketServiceImpl implements MarketService {
 
         return marketRepository.findByProducts(products);
     }
+
+    public Market findByMarketId(String marketId){
+        return marketRepository.findByMarketId(marketId);
+    }
 }

@@ -2,12 +2,14 @@ package com.future.booklook.payload;
 
 import com.future.booklook.model.entity.Product;
 
-public class ProductPageResponse {
+public class ProductInfoResponse {
     Product product;
+    String marketId;
     String marketName;
 
-    public ProductPageResponse(Product product, String marketName) {
+    public ProductInfoResponse(Product product, String marketId, String marketName) {
         this.product = product;
+        this.marketId = marketId;
         this.marketName = marketName;
     }
 
@@ -17,6 +19,14 @@ public class ProductPageResponse {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId;
     }
 
     public String getMarketName() {
