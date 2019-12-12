@@ -57,6 +57,12 @@ public class MarketController {
         return new ResponseEntity(marketService.findByUser(user), HttpStatus.OK);
     }
 
+    @GetMapping("/{marketId}")
+    public ResponseEntity<?> getMarketDataById(@PathVariable String marketId){
+        Market market = marketService.findByMarketId(marketId);
+        return new ResponseEntity(market, HttpStatus.OK);
+    }
+
     @PutMapping("/edit/profile")
     public ResponseEntity<?> editMarketProfile(@RequestBody EditMarket editMarket){
         String userId = getUserPrincipal().getUserId();
