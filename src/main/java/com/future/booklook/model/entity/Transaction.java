@@ -45,6 +45,12 @@ public class Transaction {
     @OneToMany(mappedBy = "transaction")
     private Set<TransactionDetail> transactionDetails;
 
+    public Transaction(Long checkout, TransferConfirm transferConfirm, User user) {
+        this.checkout = checkout;
+        this.transferConfirm = transferConfirm;
+        this.user = user;
+    }
+
     public Transaction() {
     }
 

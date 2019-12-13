@@ -27,6 +27,11 @@ public class TransactionDetail {
     @JoinColumn(name = TransactionDetailConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
+    public TransactionDetail(Transaction transaction, Product product) {
+        this.transaction = transaction;
+        this.product = product;
+    }
+
     public TransactionDetail() {
     }
 
