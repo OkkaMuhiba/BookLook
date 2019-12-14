@@ -19,7 +19,7 @@ public class Transaction {
     @Column(name = TransactionConstant.TRANSACTION_ID)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    private String userId;
+    private String transactionId;
 
     @Column(name = TransactionConstant.CHECKOUT)
     private Long checkout;
@@ -45,21 +45,21 @@ public class Transaction {
     @OneToMany(mappedBy = "transaction")
     private Set<TransactionDetail> transactionDetails;
 
-    public Transaction(Long checkout, TransferConfirm transferConfirm, User user) {
+    public Transaction(Long checkout, User user) {
         this.checkout = checkout;
-        this.transferConfirm = transferConfirm;
         this.user = user;
+        this.transferConfirm = TransferConfirm.UNPAID;
     }
 
     public Transaction() {
     }
 
-    public String getUserId() {
-        return userId;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public Long getCheckout() {

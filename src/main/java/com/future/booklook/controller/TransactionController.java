@@ -1,27 +1,18 @@
 package com.future.booklook.controller;
 
-import com.future.booklook.model.entity.Product;
-import com.future.booklook.model.entity.Transaction;
-import com.future.booklook.model.entity.TransactionDetail;
-import com.future.booklook.model.entity.User;
+import com.future.booklook.model.entity.*;
 import com.future.booklook.model.entity.properties.TransferConfirm;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.TransactionRequest;
 import com.future.booklook.security.UserPrincipal;
-import com.future.booklook.service.impl.ProductServiceImpl;
-import com.future.booklook.service.impl.TransactionDetailServiceImpl;
-import com.future.booklook.service.impl.TransactionServiceImpl;
-import com.future.booklook.service.impl.UserServiceImpl;
+import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +33,9 @@ public class TransactionController {
     @Autowired
     private ProductServiceImpl productService;
 
+    @Autowired
+    private MarketServiceImpl marketService;
+
     @PostMapping("/add")
     public ResponseEntity<?> addProductIntoTransaction(@RequestBody TransactionRequest transactionRequest){
         if(transactionRequest.getProducts().isEmpty()){
@@ -56,7 +50,7 @@ public class TransactionController {
             }
             products.add(productService.findByProductId(productId));
         }
-        Transaction transaction = transactionService.save(new Transaction(transactionRequest.getCheckout(), TransferConfirm.UNPAID, user));
+        Transaction transaction = transactionService.save(new Transaction(transactionRequest.getCheckout(), user));
 
         for(Product product : products){
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){
@@ -66,6 +60,30 @@ public class TransactionController {
         }
 
         return new ResponseEntity(new ApiResponse(true, "Products have been added into transaction"), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/show")
+    public ResponseEntity<?> showTransactionsForUser(){
+        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        Set<Transaction> transactions = transactionService.findAllTransactionByUser(user);
+
+        return new ResponseEntity(transactions, HttpStatus.OK);
+    }
+
+    @GetMapping("user/show/{transactionId}")
+    public ResponseEntity<?> showTransactionDetailForUser(@PathVariable String transactionId){
+        Transaction transaction = transactionService.findByTransactionId(transactionId);
+        Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
+        return new ResponseEntity(transactionDetails, HttpStatus.OK);
+    }
+
+    @GetMapping("/market/show")
+    public ResponseEntity<?> showTransactionDetailsForMarket(){
+        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        Market market = marketService.findByUser(user);
+        Set<TransactionDetail> transactionDetails = transactionDetailService.findAllTransactionDetailFromMarket(market);
+
+        return new ResponseEntity(transactionDetails, HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {

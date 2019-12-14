@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.ProductConstant;
 import com.future.booklook.model.constants.TransactionConstant;
 import com.future.booklook.model.constants.TransactionDetailConstant;
+import com.future.booklook.model.entity.properties.ProductConfirm;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -27,9 +28,14 @@ public class TransactionDetail {
     @JoinColumn(name = TransactionDetailConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = TransactionConstant.TRANSFER_CONFIRM)
+    private ProductConfirm productConfirm;
+
     public TransactionDetail(Transaction transaction, Product product) {
         this.transaction = transaction;
         this.product = product;
+        this.productConfirm = ProductConfirm.UNCONFIRMED;
     }
 
     public TransactionDetail() {
@@ -57,5 +63,13 @@ public class TransactionDetail {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public ProductConfirm getProductConfirm() {
+        return productConfirm;
+    }
+
+    public void setProductConfirm(ProductConfirm productConfirm) {
+        this.productConfirm = productConfirm;
     }
 }
