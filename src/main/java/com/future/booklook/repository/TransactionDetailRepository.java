@@ -17,7 +17,9 @@ public interface TransactionDetailRepository extends JpaRepository<TransactionDe
 
     Set<TransactionDetail> findAllByTransaction(Transaction transaction);
 
-    @Query(value = "select t from transaction_details t join products p using (product_id)" +
-            "join markets m using (market_id) where m.market_id = :marketId", nativeQuery = true)
+    @Query(value = "select t.* from transaction_details t join products p on t.product_fk = p.product_id " +
+            "join markets m on p.market_fk = m.market_id where m.market_id = :marketId", nativeQuery = true)
     Set<TransactionDetail> findAllTransactionDetailByMarket(@Param("marketId") String marketId);
+
+    TransactionDetail findByTransactionDetailId(String transactionDetailId);
 }

@@ -37,7 +37,7 @@ public class Transaction {
     private Timestamp updatedAt;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = TransactionConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
     private User user;
 

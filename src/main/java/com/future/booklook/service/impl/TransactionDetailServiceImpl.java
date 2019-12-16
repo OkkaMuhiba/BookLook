@@ -31,4 +31,8 @@ public class TransactionDetailServiceImpl implements TransactionDetailService {
     public Set<TransactionDetail> findAllByTransaction(Transaction transaction){
         return transactionDetailRepository.findAllByTransaction(transaction);
     }
+
+    public TransactionDetail findByTransactionDetailId(String transactionDetailId){
+        return transactionDetailRepository.findByTransactionDetailId(transactionDetailId);
+    }
 }

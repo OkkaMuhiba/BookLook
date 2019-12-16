@@ -17,12 +17,6 @@ public class Library {
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String libraryId;
 
-    @Column(name = LibraryConstant.USER_ID)
-    private String userId;
-
-    @Column(name = LibraryConstant.PRODUCT_ID)
-    private String productId;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = LibraryConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
@@ -33,6 +27,11 @@ public class Library {
     @JoinColumn(name = LibraryConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
+    public Library(User user, Product product) {
+        this.user = user;
+        this.product = product;
+    }
+
     public Library() {
     }
 
@@ -42,22 +41,6 @@ public class Library {
 
     public void setLibraryId(String libraryId) {
         this.libraryId = libraryId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
     }
 
     public User getUser() {

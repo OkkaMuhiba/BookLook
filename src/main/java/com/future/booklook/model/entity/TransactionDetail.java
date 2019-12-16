@@ -19,12 +19,12 @@ public class TransactionDetail {
     private String transactionDetailId;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = TransactionDetailConstant.TRANSACTION_FK, referencedColumnName = TransactionConstant.TRANSACTION_ID)
     private Transaction transaction;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = TransactionDetailConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 

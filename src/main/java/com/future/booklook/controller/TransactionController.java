@@ -1,6 +1,7 @@
 package com.future.booklook.controller;
 
 import com.future.booklook.model.entity.*;
+import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.model.entity.properties.TransferConfirm;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.TransactionRequest;
@@ -36,6 +37,15 @@ public class TransactionController {
     @Autowired
     private MarketServiceImpl marketService;
 
+    @Autowired
+    private LibraryServiceImpl libraryService;
+
+    @Autowired
+    private BasketServiceImpl basketService;
+
+    @Autowired
+    private BasketDetailServiceImpl basketDetailService;
+
     @PostMapping("/add")
     public ResponseEntity<?> addProductIntoTransaction(@RequestBody TransactionRequest transactionRequest){
         if(transactionRequest.getProducts().isEmpty()){
@@ -44,19 +54,27 @@ public class TransactionController {
 
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Set<Product> products = new HashSet<>();
+        Long checkout = new Long(0);
         for(String productId : transactionRequest.getProducts()){
-            if(productService.existsByProductId(productId)){
+            if(!(productService.existsByProductId(productId))){
                 return new ResponseEntity(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.UNPROCESSABLE_ENTITY);
             }
-            products.add(productService.findByProductId(productId));
+            Product foundProduct = productService.findByProductId(productId);
+            products.add(foundProduct);
+            checkout += foundProduct.getPrice();
         }
-        Transaction transaction = transactionService.save(new Transaction(transactionRequest.getCheckout(), user));
+        Transaction transaction = transactionService.save(new Transaction(checkout, user));
 
         for(Product product : products){
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){
                 return new ResponseEntity(new ApiResponse(false, "Some products are already exist in transaction"), HttpStatus.UNPROCESSABLE_ENTITY);
             }
             transactionDetailService.save(new TransactionDetail(transaction, product));
+        }
+
+        Basket basket = basketService.findByUser(user);
+        for(Product product : products){
+            basketDetailService.deleteByBasketAndProduct(basket, product);
         }
 
         return new ResponseEntity(new ApiResponse(true, "Products have been added into transaction"), HttpStatus.OK);
@@ -70,7 +88,7 @@ public class TransactionController {
         return new ResponseEntity(transactions, HttpStatus.OK);
     }
 
-    @GetMapping("user/show/{transactionId}")
+    @GetMapping("/user/show/{transactionId}")
     public ResponseEntity<?> showTransactionDetailForUser(@PathVariable String transactionId){
         Transaction transaction = transactionService.findByTransactionId(transactionId);
         Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
@@ -84,6 +102,43 @@ public class TransactionController {
         Set<TransactionDetail> transactionDetails = transactionDetailService.findAllTransactionDetailFromMarket(market);
 
         return new ResponseEntity(transactionDetails, HttpStatus.OK);
+    }
+
+    @PutMapping("/market/confirm/{transactionDetailId}")
+    public ResponseEntity<?> confirmProductFromMarket(@PathVariable String transactionDetailId){
+        TransactionDetail transactionDetail = transactionDetailService.findByTransactionDetailId(transactionDetailId);
+        transactionDetail.setProductConfirm(ProductConfirm.CONFIRMED);
+        transactionDetailService.save(transactionDetail);
+
+        Transaction transaction = transactionDetail.getTransaction();
+        Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
+        Boolean statusTransaction = true;
+        for(TransactionDetail checkTransaction : transactionDetails){
+            if(checkTransaction.getProductConfirm() != ProductConfirm.CONFIRMED){
+                statusTransaction = false;
+                break;
+            }
+        }
+
+        if(statusTransaction){
+            transaction.setTransferConfirm(TransferConfirm.SUCCESS);
+            transactionService.save(transaction);
+        }
+
+        User user = transactionDetail.getTransaction().getUser();
+        Product product = transactionDetail.getProduct();
+        libraryService.save(new Library(user, product));
+        return new ResponseEntity(new ApiResponse(true, "Product have been confirmed"), HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/user/confirm/{transactionId}")
+    public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionId){
+        Transaction transaction = transactionService.findByTransactionId(transactionId);
+        transaction.setTransferConfirm(TransferConfirm.PENDING);
+        transactionService.save(transaction);
+
+        return new ResponseEntity(new ApiResponse(true, "Transfer have been confirmed. " +
+                "Wait market for confirm your transfer to get the book."), HttpStatus.ACCEPTED);
     }
 
     public UserPrincipal getUserPrincipal() {
