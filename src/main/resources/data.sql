@@ -1,4 +1,5 @@
 INSERT INTO roles(name) VALUES('ROLE_USER') ON CONFLICT DO NOTHING;
+INSERT INTO roles(name) VALUES('ROLE_MARKET') ON CONFLICT DO NOTHING;
 INSERT INTO roles(name) VALUES('ROLE_ADMIN') ON CONFLICT DO NOTHING;
 
 INSERT INTO users(user_id, name, username, email, password)
@@ -33,6 +34,6 @@ INSERT INTO category_lists
 VALUES('89e9289a-30d6-42cd-a3aa-0260763cc8ae', 'Sport')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO markets(market_id, market_name, market_sku, market_bio, user_id, user_fk)
-VALUES('784ebb05-c34a-4737-84a6-a312e7661a53', 'Sebuah Toko', 'SBT', 'Ini merupakan sebuah toko', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc')
-ON CONFLICT DO NOTHING;
+-- INSERT INTO markets(market_id, market_name, market_sku, market_bio, user_id, user_fk)
+-- VALUES('784ebb05-c34a-4737-84a6-a312e7661a53', 'Sebuah Toko', 'SBT', 'Ini merupakan sebuah toko', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc')
+-- ON CONFLICT DO NOTHING;

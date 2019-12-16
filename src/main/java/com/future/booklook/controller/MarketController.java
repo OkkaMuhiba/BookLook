@@ -1,10 +1,14 @@
 package com.future.booklook.controller;
 
+import com.future.booklook.exception.AppException;
 import com.future.booklook.model.entity.Market;
+import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.User;
+import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.CreateMarketRequest;
 import com.future.booklook.payload.EditMarket;
+import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.MarketServiceImpl;
@@ -19,18 +23,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.Set;
+
 @Api
 @RestController
 @RequestMapping("/api/markets")
 public class MarketController {
     @Autowired
-    MarketServiceImpl marketService;
+    private MarketServiceImpl marketService;
 
     @Autowired
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
     @Autowired
-    FileStorageServiceImpl fileStorageService;
+    private FileStorageServiceImpl fileStorageService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createMarket(@RequestBody CreateMarketRequest marketRequest){
@@ -44,6 +53,13 @@ public class MarketController {
                 userId,
                 user
         );
+
+        Set<Role> roles = user.getRoles();
+        Role marketRole = roleRepository.findByName(RoleName.ROLE_MARKET)
+                .orElseThrow(() -> new AppException("Market Role not set."));
+        roles.add(marketRole);
+        user.setRoles(roles);
+        userService.save(user);
 
         marketService.save(market);
         return new ResponseEntity(new ApiResponse(true, "Market created successfully"), HttpStatus.CREATED);
