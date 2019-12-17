@@ -95,6 +95,24 @@ public class TransactionController {
         return new ResponseEntity(transactionDetails, HttpStatus.OK);
     }
 
+    @PutMapping("/user/confirm/{transactionId}")
+    public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionId){
+        if(!(transactionService.existsByTransactionId(transactionId))){
+            return new ResponseEntity(new ApiResponse(false, "The transaction cannot be confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        Transaction transaction = transactionService.findByTransactionId(transactionId);
+        if(transaction.getTransferConfirm() != TransferConfirm.UNPAID){
+            return new ResponseEntity(new ApiResponse(false, "The transaction already confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        transaction.setTransferConfirm(TransferConfirm.PENDING);
+        transactionService.save(transaction);
+
+        return new ResponseEntity(new ApiResponse(true, "Transfer have been confirmed. " +
+                "Wait market for confirm your transfer to get the book."), HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("/market/show")
     public ResponseEntity<?> showTransactionDetailsForMarket(){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
@@ -106,7 +124,20 @@ public class TransactionController {
 
     @PutMapping("/market/confirm/{transactionDetailId}")
     public ResponseEntity<?> confirmProductFromMarket(@PathVariable String transactionDetailId){
+        if(!(transactionDetailService.existsByTransactionDetailId(transactionDetailId))){
+            return new ResponseEntity(new ApiResponse(false, "There's no product to be confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
         TransactionDetail transactionDetail = transactionDetailService.findByTransactionDetailId(transactionDetailId);
+
+        if(transactionDetail.getTransaction().getTransferConfirm() == TransferConfirm.UNPAID){
+            return new ResponseEntity(new ApiResponse(false, "The user haven't paid this product"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        if(transactionDetail.getProductConfirm() == ProductConfirm.CONFIRMED){
+            return new ResponseEntity(new ApiResponse(false, "The product already confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
         transactionDetail.setProductConfirm(ProductConfirm.CONFIRMED);
         transactionDetailService.save(transactionDetail);
 
@@ -129,16 +160,6 @@ public class TransactionController {
         Product product = transactionDetail.getProduct();
         libraryService.save(new Library(user, product));
         return new ResponseEntity(new ApiResponse(true, "Product have been confirmed"), HttpStatus.ACCEPTED);
-    }
-
-    @PutMapping("/user/confirm/{transactionId}")
-    public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionId){
-        Transaction transaction = transactionService.findByTransactionId(transactionId);
-        transaction.setTransferConfirm(TransferConfirm.PENDING);
-        transactionService.save(transaction);
-
-        return new ResponseEntity(new ApiResponse(true, "Transfer have been confirmed. " +
-                "Wait market for confirm your transfer to get the book."), HttpStatus.ACCEPTED);
     }
 
     public UserPrincipal getUserPrincipal() {

@@ -22,4 +22,6 @@ public interface TransactionDetailRepository extends JpaRepository<TransactionDe
     Set<TransactionDetail> findAllTransactionDetailByMarket(@Param("marketId") String marketId);
 
     TransactionDetail findByTransactionDetailId(String transactionDetailId);
+
+    Boolean existsByTransactionDetailId(String transactionDetailId);
 }

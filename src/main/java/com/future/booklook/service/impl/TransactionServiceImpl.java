@@ -25,4 +25,8 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction findByTransactionId(String transactionId){
         return transactionRepository.findByTransactionId(transactionId);
     }
+
+    public Boolean existsByTransactionId(String transactionId){
+        return transactionRepository.existsByTransactionId(transactionId);
+    }
 }

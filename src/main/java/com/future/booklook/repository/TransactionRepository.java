@@ -12,4 +12,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
     Set<Transaction> findAllByUser(User user);
 
     Transaction findByTransactionId(String transactionId);
+
+    Boolean existsByTransactionId(String transactionId);
 }

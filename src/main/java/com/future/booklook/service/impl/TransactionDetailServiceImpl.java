@@ -35,4 +35,8 @@ public class TransactionDetailServiceImpl implements TransactionDetailService {
     public TransactionDetail findByTransactionDetailId(String transactionDetailId){
         return transactionDetailRepository.findByTransactionDetailId(transactionDetailId);
     }
+
+    public Boolean existsByTransactionDetailId(String transactionDetailId){
+        return transactionDetailRepository.existsByTransactionDetailId(transactionDetailId);
+    }
 }
