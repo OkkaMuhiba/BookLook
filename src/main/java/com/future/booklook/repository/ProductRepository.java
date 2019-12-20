@@ -3,7 +3,10 @@ package com.future.booklook.repository;
 import com.future.booklook.model.entity.Category;
 import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
+import com.future.booklook.model.entity.TransactionDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -19,4 +22,9 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     Boolean existsByProductId(String productId);
 
     Set<Product> findAllByMarket(Market market);
+
+    @Query(value = "select p.* from products p where product_file like %:filename%", nativeQuery = true)
+    Product findByProductFilename(@Param("filename") String filename);
+
+    Product findByTransactionDetails(Set<TransactionDetail> transactionDetails);
 }

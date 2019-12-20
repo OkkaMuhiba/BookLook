@@ -36,8 +36,11 @@ public class Transaction {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    @Column(name = TransactionConstant.USER_ID)
+    private String userId;
+
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = TransactionConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
     private User user;
 
@@ -49,6 +52,7 @@ public class Transaction {
         this.checkout = checkout;
         this.user = user;
         this.transferConfirm = TransferConfirm.UNPAID;
+        this.userId = user.getUserId();
     }
 
     public Transaction() {
@@ -92,6 +96,14 @@ public class Transaction {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public User getUser() {

@@ -4,17 +4,22 @@ import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.Transaction;
 import com.future.booklook.model.entity.TransactionDetail;
+import com.future.booklook.repository.ProductRepository;
 import com.future.booklook.repository.TransactionDetailRepository;
 import com.future.booklook.service.TransactionDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
 public class TransactionDetailServiceImpl implements TransactionDetailService {
     @Autowired
     private TransactionDetailRepository transactionDetailRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     public TransactionDetail save(TransactionDetail transactionDetail){
         return transactionDetailRepository.save(transactionDetail);
@@ -38,5 +43,11 @@ public class TransactionDetailServiceImpl implements TransactionDetailService {
 
     public Boolean existsByTransactionDetailId(String transactionDetailId){
         return transactionDetailRepository.existsByTransactionDetailId(transactionDetailId);
+    }
+
+    public Product findProductByTransactionDetail(TransactionDetail transactionDetail){
+        Set<TransactionDetail> transactionDetails = new HashSet<>();
+        transactionDetails.add(transactionDetail);
+        return productRepository.findByTransactionDetails(transactionDetails);
     }
 }

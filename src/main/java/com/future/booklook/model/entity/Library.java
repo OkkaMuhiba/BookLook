@@ -22,8 +22,7 @@ public class Library {
     @JoinColumn(name = LibraryConstant.USER_FK, referencedColumnName = UserConstant.USER_ID)
     private User user;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = LibraryConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 

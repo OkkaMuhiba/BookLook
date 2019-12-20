@@ -142,6 +142,7 @@ public class ProductController {
                 .toUriString();
 
         product.setProductPhoto(photoUri);
+        productService.save(product);
         return new ResponseEntity(new ApiResponse(true, "Product Photo has been Edited successfully"), HttpStatus.OK);
     }
 
@@ -157,6 +158,7 @@ public class ProductController {
                 .toUriString();
 
         product.setProductPhoto(bookUri);
+        productService.save(product);
         return new ResponseEntity(new ApiResponse(true, "Book file has been Edited successfully"), HttpStatus.OK);
     }
 

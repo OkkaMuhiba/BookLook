@@ -38,4 +38,8 @@ public class ProductServiceImpl implements ProductService {
     public Set<Product> findAllByMarket(Market market){
         return productRepository.findAllByMarket(market);
     }
+
+    public Product findProductByProductFilename(String filename){
+        return productRepository.findByProductFilename(filename);
+    }
 }
