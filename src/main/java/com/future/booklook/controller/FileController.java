@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/files")
@@ -61,16 +62,19 @@ public class FileController {
 
     @GetMapping("/{folder}/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String folder,@PathVariable String fileName, HttpServletRequest request) {
-//        if(folder.equals("books")){
-//            User user = userService.findByUserId(getUserPrincipal().getUserId());
-//            Product product = productService.findProductByProductFilename(fileName);
-//
-//            if(libraryService.existsByUserAndProduct(user, product)){
-//
-//            } else {
-//
-//            }
-//        }
+        if(folder.equals("books")){
+            User user = userService.findByUserId(getUserPrincipal().getUserId());
+            Product product = productService.findProductByProductFilename(request.getRequestURI());
+
+            if(!(libraryService.existsByUserAndProduct(user, product))){
+                Resource resource = null;
+                String contentType = "application/octet-stream";
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(contentType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName +"\"")
+                        .body(resource);
+            }
+        }
 
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(folder+'/'+fileName);
@@ -90,7 +94,7 @@ public class FileController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 

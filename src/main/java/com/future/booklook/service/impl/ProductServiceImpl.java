@@ -40,6 +40,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Product findProductByProductFilename(String filename){
-        return productRepository.findByProductFilename(filename);
+        return productRepository.findByProductFileContaining(filename);
     }
 }

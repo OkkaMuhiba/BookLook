@@ -23,8 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     Set<Product> findAllByMarket(Market market);
 
-    @Query(value = "select p.* from products p where product_file like %:filename%", nativeQuery = true)
-    Product findByProductFilename(@Param("filename") String filename);
+    Product findByProductFileContaining(String fileName);
 
     Product findByTransactionDetails(Set<TransactionDetail> transactionDetails);
 }
