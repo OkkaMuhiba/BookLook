@@ -10,12 +10,20 @@ INSERT INTO users(user_id, name, username, email, password)
 VALUES('d24146e7-0563-41db-9375-a4f4637a2c50','Handi Hermawan', 'handihermawan', 'test2@mail.com', '$2a$10$BOUuYbflXEBSeHpQJ0aRWuKzUCDX4GV6TjVIZjzAkmAYgyIY349Eu')
 ON CONFLICT DO NOTHING;
 
+INSERT INTO users(user_id, name, username, email, password)
+VALUES('07ecd5dd-e652-400d-8821-c8e8107b12dd','Admin123', 'admin123', 'test3@mail.com', '$2a$10$sYDOwjpH74sZDdVtpEmJJ.iYMp1Gi6B3hJ8lMBCIWzG6otLmgFP4W')
+ON CONFLICT DO NOTHING;
+
 INSERT INTO user_roles
 VALUES('ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 1)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO user_roles
 VALUES('d24146e7-0563-41db-9375-a4f4637a2c50', 1)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO user_roles
+VALUES('d24146e7-0563-41db-9375-a4f4637a2c50', 3)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO category_lists
@@ -33,7 +41,3 @@ ON CONFLICT DO NOTHING;
 INSERT INTO category_lists
 VALUES('89e9289a-30d6-42cd-a3aa-0260763cc8ae', 'Sport')
 ON CONFLICT DO NOTHING;
-
--- INSERT INTO markets(market_id, market_name, market_sku, market_bio, user_id, user_fk)
--- VALUES('784ebb05-c34a-4737-84a6-a312e7661a53', 'Sebuah Toko', 'SBT', 'Ini merupakan sebuah toko', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc')
--- ON CONFLICT DO NOTHING;

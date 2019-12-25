@@ -1,6 +1,7 @@
 package com.future.booklook.controller;
 
 import com.future.booklook.model.entity.*;
+import com.future.booklook.model.entity.properties.MarketConfirm;
 import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.model.entity.properties.TransferConfirm;
 import com.future.booklook.payload.ApiResponse;
@@ -175,11 +176,11 @@ public class TransactionController {
                     return new ResponseEntity(new ApiResponse(false, "The user haven't paid this product"), HttpStatus.UNPROCESSABLE_ENTITY);
                 }
 
-                if(transactionDetail.getProductConfirm() == ProductConfirm.CONFIRMED){
+                if(transactionDetail.getMarketConfirm() == MarketConfirm.CONFIRMED){
                     return new ResponseEntity(new ApiResponse(false, "The product already confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
                 }
 
-                transactionDetail.setProductConfirm(ProductConfirm.CONFIRMED);
+                transactionDetail.setMarketConfirm(MarketConfirm.CONFIRMED);
                 transactionDetailService.save(transactionDetail);
 
                 Product product = transactionDetailService.findProductByTransactionDetail(transactionDetail);
@@ -190,7 +191,7 @@ public class TransactionController {
         transactionDetails = transactionDetailService.findAllByTransaction(transaction);
         Boolean statusTransaction = true;
         for(TransactionDetail checkTransaction : transactionDetails){
-            if(checkTransaction.getProductConfirm() != ProductConfirm.CONFIRMED){
+            if(checkTransaction.getMarketConfirm() != MarketConfirm.CONFIRMED){
                 statusTransaction = false;
                 break;
             }

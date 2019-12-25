@@ -3,6 +3,7 @@ package com.future.booklook.service.impl;
 import com.future.booklook.model.entity.Category;
 import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
+import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.repository.ProductRepository;
 import com.future.booklook.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +21,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Set<Product> findProductsByCategories(Set<Category> categories){
-        return productRepository.findProductsByCategories(categories);
+        return productRepository.findProductsByCategoriesAndProductConfirm(categories, ProductConfirm.CONFIRMED);
     }
 
     public Product findByProductId(String productId){
         return productRepository.findByProductId(productId);
-    }
-
-    public Product findBySKU(String sku){
-        return productRepository.findBySku(sku);
     }
 
     public Boolean existsByProductId(String productId){
@@ -36,10 +33,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Set<Product> findAllByMarket(Market market){
-        return productRepository.findAllByMarket(market);
+        return productRepository.findAllByMarketAndProductConfirm(market, ProductConfirm.CONFIRMED);
     }
 
     public Product findProductByProductFilename(String filename){
         return productRepository.findByProductFileContaining(filename);
+    }
+
+    public Set<Product> findProductWithUnconfirmedStatus(){
+        return productRepository.findAllByProductConfirm(ProductConfirm.UNCONFIRMED);
     }
 }

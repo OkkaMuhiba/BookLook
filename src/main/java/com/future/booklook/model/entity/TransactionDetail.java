@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.ProductConstant;
 import com.future.booklook.model.constants.TransactionConstant;
 import com.future.booklook.model.constants.TransactionDetailConstant;
+import com.future.booklook.model.entity.properties.MarketConfirm;
 import com.future.booklook.model.entity.properties.ProductConfirm;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -26,8 +27,7 @@ public class TransactionDetail {
     @JoinColumn(name = TransactionDetailConstant.TRANSACTION_FK, referencedColumnName = TransactionConstant.TRANSACTION_ID)
     private Transaction transaction;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = TransactionDetailConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
@@ -36,7 +36,7 @@ public class TransactionDetail {
 
     @Enumerated(EnumType.STRING)
     @Column(name = TransactionDetailConstant.PRODUCT_CONFIRM)
-    private ProductConfirm productConfirm;
+    private MarketConfirm productConfirm;
 
     @Column(name = TransactionDetailConstant.CREATED_AT)
     @CreationTimestamp
@@ -50,7 +50,7 @@ public class TransactionDetail {
         this.transaction = transaction;
         this.product = product;
         this.marketId = marketId;
-        this.productConfirm = ProductConfirm.UNCONFIRMED;
+        this.productConfirm = MarketConfirm.UNCONFIRMED;
     }
 
     public TransactionDetail() {
@@ -88,11 +88,11 @@ public class TransactionDetail {
         this.marketId = marketId;
     }
 
-    public ProductConfirm getProductConfirm() {
+    public MarketConfirm getMarketConfirm() {
         return productConfirm;
     }
 
-    public void setProductConfirm(ProductConfirm productConfirm) {
+    public void setMarketConfirm(MarketConfirm productConfirm) {
         this.productConfirm = productConfirm;
     }
 

@@ -61,9 +61,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(
+                        "/api/admin/**"
+                )
+                .hasRole("ADMIN")
+                .antMatchers(
                         "/api/transactions/market/**",
                         "/api/products/edit/**",
-                        "/api/markets/edit/**").hasRole("MARKET")
+                        "/api/markets/edit/**")
+                .hasRole("MARKET")
                 .antMatchers(
                         "/api/users/**",
                         "/api/buckets/**",

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.future.booklook.model.constants.CategoryProductConstant;
 import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.ProductConstant;
+import com.future.booklook.model.entity.properties.ProductConfirm;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
@@ -50,6 +51,10 @@ public class Product {
 
     @Column(name = ProductConstant.PRODUCT_FILE)
     private String productFile;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = ProductConstant.PRODUCT_CONFIRM)
+    private ProductConfirm productConfirm;
 
     @Column(name = ProductConstant.CREATED_AT)
     @CreationTimestamp
@@ -101,6 +106,7 @@ public class Product {
         this.market = market;
         this.productPhoto = productPhoto;
         this.productFile = productFile;
+        this.productConfirm = ProductConfirm.UNCONFIRMED;
     }
 
     public Product() {
@@ -184,6 +190,14 @@ public class Product {
 
     public void setProductFile(String productFile) {
         this.productFile = productFile;
+    }
+
+    public ProductConfirm getProductConfirm() {
+        return productConfirm;
+    }
+
+    public void setProductConfirm(ProductConfirm productConfirm) {
+        this.productConfirm = productConfirm;
     }
 
     public Set<BasketDetail> getBasketDetails() {

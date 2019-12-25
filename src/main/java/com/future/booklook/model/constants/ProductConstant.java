@@ -12,6 +12,7 @@ public class ProductConstant {
     public static final String PRICE = "price";
     public static final String PRODUCT_PHOTO = "product_photo";
     public static final String PRODUCT_FILE = "product_file";
+    public static final String PRODUCT_CONFIRM = "product_confirm";
     public static final String CREATED_AT = "created_at";
     public static final String UPDATED_AT = "updated_at";
     public static final String MARKET_FK = "market_fk";
