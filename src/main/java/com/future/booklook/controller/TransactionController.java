@@ -51,7 +51,7 @@ public class TransactionController {
     @PostMapping("/user/add")
     public ResponseEntity<?> addProductIntoTransaction(@RequestBody TransactionRequest transactionRequest){
         if(transactionRequest.getProducts().isEmpty()){
-            return new ResponseEntity(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByUserId(getUserPrincipal().getUserId());
@@ -59,7 +59,7 @@ public class TransactionController {
         Long checkout = new Long(0);
         for(String productId : transactionRequest.getProducts()){
             if(!(productService.existsByProductId(productId))){
-                return new ResponseEntity(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.BAD_REQUEST);
             }
             Product foundProduct = productService.findByProductId(productId);
             products.add(foundProduct);
@@ -69,7 +69,7 @@ public class TransactionController {
 
         for(Product product : products){
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){
-                return new ResponseEntity(new ApiResponse(false, "Some products are already exist in transaction"), HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity(new ApiResponse(false, "Some products are already exist in transaction"), HttpStatus.BAD_REQUEST);
             }
             String marketId = marketService.findMarketByProduct(product).getMarketId();
             transactionDetailService.save(new TransactionDetail(transaction, product, marketId));
@@ -103,12 +103,12 @@ public class TransactionController {
     @PutMapping("/user/confirm/{transactionId}")
     public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionId){
         if(!(transactionService.existsByTransactionId(transactionId))){
-            return new ResponseEntity(new ApiResponse(false, "The transaction cannot be confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "The transaction cannot be confirmed"), HttpStatus.BAD_REQUEST);
         }
 
         Transaction transaction = transactionService.findByTransactionId(transactionId);
         if(transaction.getTransferConfirm() != TransferConfirm.UNPAID){
-            return new ResponseEntity(new ApiResponse(false, "The transaction already confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "The transaction already confirmed"), HttpStatus.BAD_REQUEST);
         }
 
         transaction.setTransferConfirm(TransferConfirm.PENDING);
@@ -137,7 +137,7 @@ public class TransactionController {
     @GetMapping("/market/show/{transactionId}")
     public ResponseEntity<?> showTransactionDetailWithProductFromMarket(@PathVariable String transactionId){
         if(!(transactionService.existsByTransactionId(transactionId))){
-            return new ResponseEntity(new ApiResponse(false, "The transaction doesn't exist"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "The transaction doesn't exist"), HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByUserId(getUserPrincipal().getUserId());
@@ -160,7 +160,7 @@ public class TransactionController {
     @PutMapping("/market/confirm/{transactionId}")
     public ResponseEntity<?> confirmProductFromMarket(@PathVariable String transactionId){
         if(!(transactionService.existsByTransactionId(transactionId))){
-            return new ResponseEntity(new ApiResponse(false, "There's no transaction be recorded"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "There's no transaction be recorded"), HttpStatus.BAD_REQUEST);
         }
 
         User marketUser = userService.findByUserId(getUserPrincipal().getUserId());
@@ -173,11 +173,11 @@ public class TransactionController {
         for(TransactionDetail transactionDetail : transactionDetails){
             if(transactionDetail.getMarketId().equals(market.getMarketId())){
                 if(transaction.getTransferConfirm() == TransferConfirm.UNPAID){
-                    return new ResponseEntity(new ApiResponse(false, "The user haven't paid this product"), HttpStatus.UNPROCESSABLE_ENTITY);
+                    return new ResponseEntity(new ApiResponse(false, "The user haven't paid this product"), HttpStatus.BAD_REQUEST);
                 }
 
                 if(transactionDetail.getMarketConfirm() == MarketConfirm.CONFIRMED){
-                    return new ResponseEntity(new ApiResponse(false, "The product already confirmed"), HttpStatus.UNPROCESSABLE_ENTITY);
+                    return new ResponseEntity(new ApiResponse(false, "The product already confirmed"), HttpStatus.BAD_REQUEST);
                 }
 
                 transactionDetail.setMarketConfirm(MarketConfirm.CONFIRMED);

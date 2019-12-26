@@ -45,12 +45,12 @@ public class WishlistController {
         if(productService.existsByProductId(wishlistRequest.getProductId())){
             Product product = productService.findByProductId(wishlistRequest.getProductId());
             if(wishlistService.existsByUserAndProduct(user, product)){
-                return new ResponseEntity(new ApiResponse(false, "Product already exist in Wishlist"), HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity(new ApiResponse(false, "Product already exist in Wishlist"), HttpStatus.BAD_REQUEST);
             } else {
                 wishlistService.save(new Wishlist(user, product));
             }
         } else {
-            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity(new ApiResponse(true, "Your product has been added into wishlist"), HttpStatus.CREATED);
@@ -78,10 +78,10 @@ public class WishlistController {
             if(wishlistService.existsByUserAndProduct(user, product)){
                 wishlistService.deleteByUserAndProduct(user, product);
             } else {
-                return new ResponseEntity(new ApiResponse(false, "Product is not available in your Wishlist"), HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity(new ApiResponse(false, "Product is not available in your Wishlist"), HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity(new ApiResponse(false, "Product is not available"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "Product is not available"), HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity(new ApiResponse(true, "Product has been removed from wishlist"), HttpStatus.OK);

@@ -27,7 +27,7 @@ public class AdminController {
     @PostMapping("/products/{productId}/confirm")
     public ResponseEntity<?> confirmProduct(@PathVariable String productId){
         if(!(productService.existsByProductId(productId))){
-            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
         }
         Product product = productService.findByProductId(productId);
         product.setProductConfirm(ProductConfirm.CONFIRMED);

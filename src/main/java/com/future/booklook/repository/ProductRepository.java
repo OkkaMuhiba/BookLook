@@ -20,6 +20,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     Boolean existsByProductId(String productId);
 
+    Set<Product> findAllByMarket(Market market);
+
     Set<Product> findAllByMarketAndProductConfirm(Market market, ProductConfirm productConfirm);
 
     Product findByProductFileContaining(String fileName);

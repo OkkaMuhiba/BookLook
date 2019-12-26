@@ -37,6 +37,15 @@ public class UserController {
         return new ResponseEntity(userService.findByUserId(userId), HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserDataFromUserId(@PathVariable String userId){
+        if(userService.userExistByUserId(userId)){
+            return new ResponseEntity(userService.findByUserId(userId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new ApiResponse(false, "User does not exist"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PutMapping("/edit/profile")
     public ResponseEntity<?> editUserData(@RequestBody EditProfile editProfile){
         String userId = getUserPrincipal().getUserId();
@@ -75,11 +84,11 @@ public class UserController {
         User user = userService.findByUserId(userId);
 
         if(!(passwordEncoder.matches(editUserPassword.getOldPassword(), user.getPassword()))){
-            return new ResponseEntity(new ApiResponse(false, "Old password is wrong"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "Old password is wrong"), HttpStatus.BAD_REQUEST);
         }
 
         if(passwordEncoder.matches(editUserPassword.getNewPassword(), user.getPassword())){
-            return new ResponseEntity(new ApiResponse(false, "Your new password is same as your old password"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity(new ApiResponse(false, "Your new password is same as your old password"), HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(passwordEncoder.encode(editUserPassword.getNewPassword()));

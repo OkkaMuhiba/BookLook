@@ -15,4 +15,6 @@ public interface MarketRepository extends JpaRepository<Market, String> {
     Market findByProducts(Set<Product> products);
 
     Market findByMarketId(String marketId);
+
+    Boolean existsByMarketId(String marketId);
 }

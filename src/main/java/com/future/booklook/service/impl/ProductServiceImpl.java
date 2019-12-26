@@ -33,6 +33,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Set<Product> findAllByMarket(Market market){
+        return productRepository.findAllByMarket(market);
+    }
+
+    public Set<Product> findAllByMarketAndConfirmed(Market market){
         return productRepository.findAllByMarketAndProductConfirm(market, ProductConfirm.CONFIRMED);
     }
 

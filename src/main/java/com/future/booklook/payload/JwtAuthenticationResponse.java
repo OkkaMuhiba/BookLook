@@ -1,19 +1,29 @@
 package com.future.booklook.payload;
 
 public class JwtAuthenticationResponse {
-    private String accessToken;
+    private Boolean status;
+    private String result;
     private String tokenType = "Bearer";
 
-    public JwtAuthenticationResponse(String accessToken) {
-        this.accessToken = accessToken;
+    public JwtAuthenticationResponse(Boolean status, String accessToken) {
+        this.status = status;
+        this.result = accessToken;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public String getTokenType() {

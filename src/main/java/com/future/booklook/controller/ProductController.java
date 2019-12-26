@@ -4,6 +4,7 @@ import com.future.booklook.model.entity.Category;
 import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
+import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.EditProduct;
 import com.future.booklook.payload.ProductInfoResponse;
@@ -164,7 +165,20 @@ public class ProductController {
 
     @GetMapping("/market/{marketId}")
     public ResponseEntity<?> allProductFromMarket(@PathVariable String marketId){
+        if(!(marketService.marketExistByMarketId(marketId))){
+            return new ResponseEntity(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
+        }
+
         Market market = marketService.findByMarketId(marketId);
+        Set<Product> products = productService.findAllByMarketAndConfirmed(market);
+
+        return new ResponseEntity(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/market/auth/all")
+    public ResponseEntity<?> allProductFromAuthenticatedMarket(){
+        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        Market market = user.getMarket();
         Set<Product> products = productService.findAllByMarket(market);
 
         return new ResponseEntity(products, HttpStatus.OK);

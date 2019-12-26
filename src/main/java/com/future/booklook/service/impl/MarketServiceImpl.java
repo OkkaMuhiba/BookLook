@@ -34,4 +34,8 @@ public class MarketServiceImpl implements MarketService {
     public Market findByMarketId(String marketId){
         return marketRepository.findByMarketId(marketId);
     }
+
+    public Boolean marketExistByMarketId(String marketId){
+        return marketRepository.existsByMarketId(marketId);
+    }
 }
