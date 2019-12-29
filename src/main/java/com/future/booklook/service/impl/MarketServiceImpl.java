@@ -38,4 +38,12 @@ public class MarketServiceImpl implements MarketService {
     public Boolean marketExistByMarketId(String marketId){
         return marketRepository.existsByMarketId(marketId);
     }
+
+    public Boolean marketNameAlreadyExist(String marketName){
+        return marketRepository.existsByMarketName(marketName);
+    }
+
+    public Boolean MarketSKUAlreadyExist(String SKU){
+        return marketRepository.existsByMarketSKU(SKU);
+    }
 }
