@@ -2,6 +2,7 @@ package com.future.booklook.controller;
 
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
+import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.LibraryServiceImpl;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,12 +22,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/api/files")
 public class FileController {
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+
+    private static final Set<String> whitelistFolder = new HashSet<String>(Arrays.asList("markets", "products", "profiles", "users"));
 
     @Autowired
     private FileStorageServiceImpl fileStorageService;
@@ -61,20 +67,10 @@ public class FileController {
 //    }
 
     @GetMapping("/{folder}/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String folder,@PathVariable String fileName, HttpServletRequest request) {
-//        if(folder.equals("books")){
-//            User user = userService.findByUserId(getUserPrincipal().getUserId());
-//            Product product = productService.findProductByProductFilename(request.getRequestURI());
-//
-//            if(!(libraryService.existsByUserAndProduct(user, product))){
-//                Resource resource = null;
-//                String contentType = "application/octet-stream";
-//                return ResponseEntity.ok()
-//                        .contentType(MediaType.parseMediaType(contentType))
-//                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName +"\"")
-//                        .body(resource);
-//            }
-//        }
+    public ResponseEntity<?> downloadFile(@PathVariable String folder,@PathVariable String fileName, HttpServletRequest request) {
+        if(!(whitelistFolder.contains(folder))){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(folder+'/'+fileName);

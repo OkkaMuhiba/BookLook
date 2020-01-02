@@ -76,7 +76,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/users/**",
                         "/api/buckets/**",
                         "/api/wishlists/**",
-                        "/api/transactions/user/**"
+                        "/api/transactions/user/**",
+                        "/api/libraries"
                 ).hasRole("USER")
                 .anyRequest().permitAll();
 

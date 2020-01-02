@@ -26,6 +26,9 @@ public class Library {
     @JoinColumn(name = LibraryConstant.PRODUCT_FK, referencedColumnName = ProductConstant.PRODUCT_ID)
     private Product product;
 
+    @Column(name = LibraryConstant.UNIQUE_KEY)
+    private String uniqueKey;
+
     public Library(User user, Product product) {
         this.user = user;
         this.product = product;
@@ -56,5 +59,13 @@ public class Library {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getUniqueKey() {
+        return uniqueKey;
+    }
+
+    public void setUniqueKey(String uniqueKey) {
+        this.uniqueKey = uniqueKey;
     }
 }

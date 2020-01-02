@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @Api
@@ -184,7 +185,9 @@ public class TransactionController {
                 transactionDetailService.save(transactionDetail);
 
                 Product product = transactionDetailService.findProductByTransactionDetail(transactionDetail);
-                libraryService.save(new Library(buyerUser, product));
+                Library library = new Library(buyerUser, product);
+                library.setUniqueKey(generateRandomString());
+                libraryService.save(library);
             }
         }
 
@@ -209,5 +212,20 @@ public class TransactionController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         return user;
+    }
+
+    private String generateRandomString(){
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 16;
+        Random random = new Random();
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return generatedString;
     }
 }

@@ -5,4 +5,5 @@ public class LibraryConstant {
     public static final String LIBRARY_ID = "library_id";
     public static final String USER_FK = "user_fk";
     public static final String PRODUCT_FK = "product_fk";
+    public static final String UNIQUE_KEY = "unique_key";
 }
