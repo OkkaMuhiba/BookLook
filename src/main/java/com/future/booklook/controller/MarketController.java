@@ -1,6 +1,7 @@
 package com.future.booklook.controller;
 
 import com.future.booklook.exception.AppException;
+import com.future.booklook.model.entity.BlockedMarket;
 import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.User;
@@ -10,6 +11,7 @@ import com.future.booklook.payload.CreateMarketRequest;
 import com.future.booklook.payload.EditMarket;
 import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.security.UserPrincipal;
+import com.future.booklook.service.impl.BlockedMarketServiceImpl;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.MarketServiceImpl;
 import com.future.booklook.service.impl.UserServiceImpl;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 @Api
@@ -40,6 +44,9 @@ public class MarketController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private BlockedMarketServiceImpl blockedMarketService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createMarket(@RequestBody CreateMarketRequest marketRequest){
@@ -114,6 +121,33 @@ public class MarketController {
         market.setMarketPhoto(photoUri);
         marketService.save(market);
         return new ResponseEntity(new ApiResponse(true, "Photo market has been edited successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping("/block/check")
+    public ResponseEntity<?> checkIfMarketIsBlocked(){
+        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        Set<Role> roles = user.getRoles();
+        for(Role role : roles){
+            if(role.getName().equals(RoleName.ROLE_MARKET_BLOCKED)){
+                Market market = user.getMarket();
+                BlockedMarket blockingStatus = blockedMarketService.findBlockedMarketByMarket(market);
+
+                Date date = new Date();
+                Timestamp endTimeBlock = new Timestamp(date.getTime());
+                if(endTimeBlock.after(blockingStatus.getEndAt())){
+                    roles.remove(new Role(RoleName.ROLE_MARKET_BLOCKED));
+                    user.setRoles(roles);
+                    userService.save(user);
+                    blockedMarketService.removeBlockedMarket(blockingStatus);
+
+                    return new ResponseEntity(new ApiResponse(true, "Market is allowed to be accessed"), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity(new ApiResponse(false, "Market is still blocked by administrator"), HttpStatus.OK);
+                }
+            }
+        }
+
+        return new ResponseEntity(new ApiResponse(true, "Market is allowed to be accessed"), HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {

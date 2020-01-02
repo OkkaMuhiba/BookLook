@@ -46,4 +46,8 @@ public class MarketServiceImpl implements MarketService {
     public Boolean MarketSKUAlreadyExist(String SKU){
         return marketRepository.existsByMarketSKU(SKU);
     }
+
+    public Boolean marketExistByUser(User user){
+        return marketRepository.existsByUser(user);
+    }
 }
