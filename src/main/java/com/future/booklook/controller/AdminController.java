@@ -4,6 +4,7 @@ import com.future.booklook.model.entity.*;
 import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.payload.ApiResponse;
+import com.future.booklook.payload.UnconfirmedProductResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.BlockedMarketServiceImpl;
 import com.future.booklook.service.impl.MarketServiceImpl;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Api
@@ -38,8 +40,16 @@ public class AdminController {
     private BlockedMarketServiceImpl blockedMarketService;
 
     @GetMapping("/products/unconfirmed")
-    public Set<Product> getAllProductWithUnconfirmedStatus(){
-        return productService.findProductWithUnconfirmedStatus();
+    public ResponseEntity<?> getAllProductWithUnconfirmedStatus(){
+        Set<Product> products = productService.findProductWithUnconfirmedStatus();
+        Set<UnconfirmedProductResponse> responses = new HashSet<>();
+        for(Product product : products){
+            responses.add(
+                    new UnconfirmedProductResponse(product, product.getMarket().getMarketId(), product.getMarket().getMarketName())
+            );
+        }
+
+        return new ResponseEntity(responses, HttpStatus.OK);
     }
 
     @PostMapping("/products/{productId}/confirm")
@@ -48,6 +58,11 @@ public class AdminController {
             return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
         }
         Product product = productService.findByProductId(productId);
+
+        if(product.getProductConfirm().equals(ProductConfirm.CONFIRMED)){
+            return new ResponseEntity(new ApiResponse(false, "Product already confirmed"), HttpStatus.BAD_REQUEST);
+        }
+
         product.setProductConfirm(ProductConfirm.CONFIRMED);
         productService.save(product);
         return new ResponseEntity(new ApiResponse(true, "Product have been confirmed"), HttpStatus.OK);

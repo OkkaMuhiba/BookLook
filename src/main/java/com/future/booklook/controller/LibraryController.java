@@ -47,9 +47,13 @@ public class LibraryController {
         return new ResponseEntity(libraries, HttpStatus.OK);
     }
 
-    @GetMapping("/books/{key}/{fileName:.+}")
-    public ResponseEntity<?> getBookFromLibrary(@PathVariable String key, @PathVariable String fileName, HttpServletRequest request){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+    @GetMapping("/books/{userId}/{key}/{fileName:.+}")
+    public ResponseEntity<?> getBookFromLibrary(@PathVariable String userId, @PathVariable String key, @PathVariable String fileName, HttpServletRequest request){
+        if(!(userService.userExistByUserId(userId))){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        User user = userService.findByUserId(userId);
         if(libraryService.existsByUserAndUniqueKey(user, key)){
             Library library = libraryService.findByUserAndUniqueKey(user, key);
             library.setUniqueKey(generateRandomString());

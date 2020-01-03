@@ -49,6 +49,9 @@ public class TransactionController {
     @Autowired
     private BasketDetailServiceImpl basketDetailService;
 
+    @Autowired
+    private WishlistServiceImpl wishlistService;
+
     @PostMapping("/user/add")
     public ResponseEntity<?> addProductIntoTransaction(@RequestBody TransactionRequest transactionRequest){
         if(transactionRequest.getProducts().isEmpty()){
@@ -78,7 +81,12 @@ public class TransactionController {
 
         Basket basket = basketService.findByUser(user);
         for(Product product : products){
-            basketDetailService.deleteByBasketAndProduct(basket, product);
+            if(basketDetailService.existsByBasketAndProduct(basket, product)){
+                basketDetailService.deleteByBasketAndProduct(basket, product);
+            }
+            if(wishlistService.existsByUserAndProduct(user, product)){
+                wishlistService.deleteByUserAndProduct(user, product);
+            }
         }
 
         return new ResponseEntity(new ApiResponse(true, "Products have been added into transaction"), HttpStatus.OK);
