@@ -50,4 +50,8 @@ public class MarketServiceImpl implements MarketService {
     public Boolean marketExistByUser(User user){
         return marketRepository.existsByUser(user);
     }
+
+    public Set<Market> findAllMarket(){
+        return marketRepository.findAllMarket();
+    }
 }

@@ -74,6 +74,12 @@ public class AdminController {
         return new ResponseEntity(user, HttpStatus.OK);
     }
 
+    @GetMapping("/list/market")
+    public ResponseEntity<?> getAllMarket(){
+        Set<Market> markets = marketService.findAllMarket();
+        return new ResponseEntity(markets, HttpStatus.OK);
+    }
+
     @PostMapping("/block/market/{marketId}")
     public ResponseEntity<?> blockMarketFromMarketId(@PathVariable String marketId){
         if(!(marketService.marketExistByMarketId(marketId))){

@@ -4,6 +4,7 @@ import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -23,4 +24,7 @@ public interface MarketRepository extends JpaRepository<Market, String> {
     Boolean existsByMarketSKU(String SKU);
 
     Boolean existsByUser(User user);
+
+    @Query(value = "select m from Market m")
+    Set<Market> findAllMarket();
 }
