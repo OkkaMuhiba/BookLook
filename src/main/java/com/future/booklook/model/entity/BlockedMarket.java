@@ -34,6 +34,9 @@ public class BlockedMarket {
         this.endAt = endAt;
     }
 
+    public BlockedMarket() {
+    }
+
     public String getBlockedId() {
         return blockedId;
     }

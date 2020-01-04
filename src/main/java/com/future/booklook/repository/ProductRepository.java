@@ -29,4 +29,6 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     Product findByTransactionDetails(Set<TransactionDetail> transactionDetails);
 
     Set<Product> findAllByProductConfirm(ProductConfirm productConfirm);
+
+    Long countByProductConfirm(ProductConfirm productConfirm);
 }

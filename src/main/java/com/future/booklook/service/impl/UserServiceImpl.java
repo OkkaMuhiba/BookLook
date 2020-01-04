@@ -23,4 +23,8 @@ public class UserServiceImpl implements UserService {
     public Boolean userExistByUserId(String userId){
         return userRepository.existsByUserId(userId);
     }
+
+    public Long getTotalUserInNumber(){
+        return userRepository.count();
+    }
 }

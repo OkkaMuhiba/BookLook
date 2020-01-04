@@ -4,12 +4,10 @@ import com.future.booklook.model.entity.*;
 import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.payload.ApiResponse;
+import com.future.booklook.payload.DashboardAdminResponse;
 import com.future.booklook.payload.UnconfirmedProductResponse;
 import com.future.booklook.security.UserPrincipal;
-import com.future.booklook.service.impl.BlockedMarketServiceImpl;
-import com.future.booklook.service.impl.MarketServiceImpl;
-import com.future.booklook.service.impl.ProductServiceImpl;
-import com.future.booklook.service.impl.UserServiceImpl;
+import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +36,9 @@ public class AdminController {
 
     @Autowired
     private BlockedMarketServiceImpl blockedMarketService;
+
+    @Autowired
+    private TransactionServiceImpl transactionService;
 
     @GetMapping("/products/unconfirmed")
     public ResponseEntity<?> getAllProductWithUnconfirmedStatus(){
@@ -80,20 +81,27 @@ public class AdminController {
         return new ResponseEntity(markets, HttpStatus.OK);
     }
 
-    @PostMapping("/block/market/{marketId}")
-    public ResponseEntity<?> blockMarketFromMarketId(@PathVariable String marketId){
+    @PostMapping("/block/market/{marketId}/{days}")
+    public ResponseEntity<?> blockMarketFromMarketId(@PathVariable String marketId, @PathVariable Long days){
         if(!(marketService.marketExistByMarketId(marketId))){
             return new ResponseEntity(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         Market market = marketService.findByMarketId(marketId);
+        User user = market.getUser();
+        Set<Role> roles = user.getRoles();
+
+        for(Role role : roles){
+            if(role.getName().equals(RoleName.ROLE_MARKET_BLOCKED)){
+                return new ResponseEntity(new ApiResponse(false, "Market already blocked"), HttpStatus.BAD_REQUEST);
+            }
+        }
+
         Date date = new Date();
-        Timestamp endTimeBlock = new Timestamp(date.getTime() + 86400000);
+        Timestamp endTimeBlock = new Timestamp(date.getTime() + (days * 86400000));
         BlockedMarket blockedMarket = new BlockedMarket(market, endTimeBlock);
         blockedMarketService.saveBlockedMarket(blockedMarket);
 
-        User user = market.getUser();
-        Set<Role> roles = user.getRoles();
         roles.add(new Role(RoleName.ROLE_MARKET_BLOCKED));
         user.setRoles(roles);
         userService.save(user);
@@ -105,6 +113,19 @@ public class AdminController {
     public ResponseEntity<?> listAllBlockedMarket(){
         Set<BlockedMarket> list = blockedMarketService.findAllBlockedMarket();
         return new ResponseEntity(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/dashboard/statistic")
+    public ResponseEntity<?> getStatisticDataForAdminDashboard(){
+        DashboardAdminResponse response = new DashboardAdminResponse(
+                userService.getTotalUserInNumber(),
+                marketService.getTotalMarketInNumber(),
+                productService.getAllConfirmedBookInNumber(),
+                productService.getAllUnconfirmedBookInNumber(),
+                transactionService.getAllTransactionInNumber()
+        );
+
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     public UserPrincipal getUserPrincipal() {

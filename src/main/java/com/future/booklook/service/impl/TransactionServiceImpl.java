@@ -50,4 +50,8 @@ public class TransactionServiceImpl implements TransactionService {
         transactions.add(transaction);
         return userRepository.findByTransactions(transactions);
     }
+
+    public Long getAllTransactionInNumber(){
+        return transactionRepository.count();
+    }
 }

@@ -47,4 +47,12 @@ public class ProductServiceImpl implements ProductService {
     public Set<Product> findProductWithUnconfirmedStatus(){
         return productRepository.findAllByProductConfirm(ProductConfirm.UNCONFIRMED);
     }
+
+    public Long getAllConfirmedBookInNumber(){
+        return productRepository.countByProductConfirm(ProductConfirm.CONFIRMED);
+    }
+
+    public Long getAllUnconfirmedBookInNumber(){
+        return productRepository.countByProductConfirm(ProductConfirm.UNCONFIRMED);
+    }
 }

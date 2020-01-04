@@ -3,6 +3,7 @@ package com.future.booklook.controller;
 import com.future.booklook.model.entity.*;
 import com.future.booklook.model.entity.properties.MarketConfirm;
 import com.future.booklook.model.entity.properties.ProductConfirm;
+import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.model.entity.properties.TransferConfirm;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.TransactionDetailResponse;
@@ -75,7 +76,9 @@ public class TransactionController {
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){
                 return new ResponseEntity(new ApiResponse(false, "Some products are already exist in transaction"), HttpStatus.BAD_REQUEST);
             }
-            String marketId = marketService.findMarketByProduct(product).getMarketId();
+
+            Market market = marketService.findMarketByProduct(product);
+            String marketId = market.getMarketId();
             transactionDetailService.save(new TransactionDetail(transaction, product, marketId));
         }
 
@@ -121,6 +124,30 @@ public class TransactionController {
         }
 
         transaction.setTransferConfirm(TransferConfirm.PENDING);
+
+        Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
+        Boolean statusTransaction = true;
+        for(TransactionDetail transactionDetail : transactionDetails){
+            Product product = transactionDetail.getProduct();
+            if(productIsPassedDirectlyIntoUser(product)){
+                transactionDetail.setMarketConfirm(MarketConfirm.CONFIRMED);
+                transactionDetailService.save(transactionDetail);
+
+                User buyerUser = transactionService.findUserFromTransaction(transaction);
+                Library library = new Library(buyerUser, product);
+                library.setUniqueKey(generateRandomString());
+                libraryService.save(library);
+            }
+
+            if(transactionDetail.getMarketConfirm().equals(MarketConfirm.UNCONFIRMED)){
+                statusTransaction = false;
+            }
+        }
+
+        if(statusTransaction == true){
+            transaction.setTransferConfirm(TransferConfirm.SUCCESS);
+        }
+
         transactionService.save(transaction);
 
         return new ResponseEntity(new ApiResponse(true, "Transfer have been confirmed. " +
@@ -192,7 +219,7 @@ public class TransactionController {
                 transactionDetail.setMarketConfirm(MarketConfirm.CONFIRMED);
                 transactionDetailService.save(transactionDetail);
 
-                Product product = transactionDetailService.findProductByTransactionDetail(transactionDetail);
+                Product product = transactionDetail.getProduct();
                 Library library = new Library(buyerUser, product);
                 library.setUniqueKey(generateRandomString());
                 libraryService.save(library);
@@ -235,5 +262,18 @@ public class TransactionController {
                 .toString();
 
         return generatedString;
+    }
+
+    public Boolean productIsPassedDirectlyIntoUser(Product product){
+        Market market = marketService.findMarketByProduct(product);
+        User user = market.getUser();
+        Set<Role> roles = user.getRoles();
+        for(Role role : roles){
+            if(role.getName().equals(RoleName.ROLE_MARKET_BLOCKED)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
