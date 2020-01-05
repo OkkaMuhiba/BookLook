@@ -1,11 +1,13 @@
 package com.future.booklook.controller;
 
+import com.future.booklook.exception.AppException;
 import com.future.booklook.model.entity.*;
 import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.DashboardAdminResponse;
 import com.future.booklook.payload.UnconfirmedProductResponse;
+import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
@@ -39,6 +41,9 @@ public class AdminController {
 
     @Autowired
     private TransactionServiceImpl transactionService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @GetMapping("/products/unconfirmed")
     public ResponseEntity<?> getAllProductWithUnconfirmedStatus(){
@@ -91,20 +96,21 @@ public class AdminController {
         User user = market.getUser();
         Set<Role> roles = user.getRoles();
 
-        for(Role role : roles){
-            if(role.getName().equals(RoleName.ROLE_MARKET_BLOCKED)){
-                return new ResponseEntity(new ApiResponse(false, "Market already blocked"), HttpStatus.BAD_REQUEST);
-            }
+        Role blockRole = roleRepository.findByName(RoleName.ROLE_MARKET_BLOCKED)
+                .orElseThrow(() -> new AppException("Market Role not set."));
+        
+        if(roles.contains(blockRole)){
+            return new ResponseEntity(new ApiResponse(false, "Market already blocked"), HttpStatus.BAD_REQUEST);
         }
+
+        roles.add(blockRole);
+        user.setRoles(roles);
+        userService.save(user);
 
         Date date = new Date();
         Timestamp endTimeBlock = new Timestamp(date.getTime() + (days * 86400000));
         BlockedMarket blockedMarket = new BlockedMarket(market, endTimeBlock);
         blockedMarketService.saveBlockedMarket(blockedMarket);
-
-        roles.add(new Role(RoleName.ROLE_MARKET_BLOCKED));
-        user.setRoles(roles);
-        userService.save(user);
 
         return new ResponseEntity(new ApiResponse(true, "Market have been blocked"), HttpStatus.ACCEPTED);
     }

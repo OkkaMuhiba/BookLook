@@ -24,7 +24,12 @@ public class BlockedMarketServiceImpl {
     public BlockedMarket findBlockedMarketByMarket(Market market){
         return blockedMarketRepository.findByMarket(market);
     }
+
     public Set<BlockedMarket> findAllBlockedMarket(){
         return blockedMarketRepository.findAllBlockedMarket();
+    }
+
+    public Boolean marketAlreadyBlockedBefore(Market market){
+        return blockedMarketRepository.existsByMarket(market);
     }
 }

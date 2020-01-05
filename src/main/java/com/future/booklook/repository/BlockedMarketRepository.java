@@ -14,6 +14,8 @@ import java.util.Set;
 public interface BlockedMarketRepository extends JpaRepository<BlockedMarket, String> {
     BlockedMarket findByMarket(Market market);
 
+    Boolean existsByMarket(Market market);
+
     @Transactional
     void deleteByBlockedId(String BlockedId);
 
