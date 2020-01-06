@@ -131,13 +131,7 @@ public class AuthController {
 
         user.setRoles(Collections.singleton(userRole));
 
-        User result = userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+        return new ResponseEntity(new ApiResponse(true, "User registered successfully"), HttpStatus.OK);
     }
 
     public Authentication authenticationAttempt(LoginRequest loginRequest){

@@ -15,5 +15,7 @@ public interface LibraryRepository extends JpaRepository<Library, String> {
 
     Boolean existsByUserAndUniqueKey(User user, String uniqueKey);
 
+    Boolean existsByUserAndProduct(User user, Product product);
+
     Set<Library> findAllByUser(User user);
 }

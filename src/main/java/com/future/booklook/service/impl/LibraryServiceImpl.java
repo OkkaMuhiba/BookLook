@@ -30,4 +30,8 @@ public class LibraryServiceImpl implements LibraryService {
     public Set<Library> findAllByUser(User user){
         return libraryRepository.findAllByUser(user);
     }
+
+    public Boolean existByUserAndProduct(User user, Product product){
+        return libraryRepository.existsByUserAndProduct(user, product);
+    }
 }

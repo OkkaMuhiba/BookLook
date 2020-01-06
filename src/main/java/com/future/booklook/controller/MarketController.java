@@ -53,6 +53,10 @@ public class MarketController {
         String userId = getUserPrincipal().getUserId();
         User user = userService.findByUserId(userId);
 
+        if(marketService.marketExistByUser(user)){
+            return new ResponseEntity(new ApiResponse(false, "User already have market"), HttpStatus.BAD_REQUEST);
+        }
+
         if(marketService.marketNameAlreadyExist(marketRequest.getMarketName())){
             return new ResponseEntity(new ApiResponse(false, "Market name have been taken by another user"), HttpStatus.BAD_REQUEST);
         }

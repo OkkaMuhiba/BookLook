@@ -8,10 +8,7 @@ import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.payload.ProductInfoResponse;
 import com.future.booklook.payload.WishlistRequest;
 import com.future.booklook.security.UserPrincipal;
-import com.future.booklook.service.impl.MarketServiceImpl;
-import com.future.booklook.service.impl.ProductServiceImpl;
-import com.future.booklook.service.impl.UserServiceImpl;
-import com.future.booklook.service.impl.WishlistServiceImpl;
+import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,13 +34,21 @@ public class WishlistController {
     private ProductServiceImpl productService;
 
     @Autowired
-    MarketServiceImpl marketService;
+    private MarketServiceImpl marketService;
+
+    @Autowired
+    private LibraryServiceImpl libraryService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProductIntoWishlist(@RequestBody WishlistRequest wishlistRequest){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         if(productService.existsByProductId(wishlistRequest.getProductId())){
             Product product = productService.findByProductId(wishlistRequest.getProductId());
+
+            if(libraryService.existByUserAndProduct(user, product)){
+                return new ResponseEntity(new ApiResponse(false, "Product already exist in Library"), HttpStatus.BAD_REQUEST);
+            }
+
             if(wishlistService.existsByUserAndProduct(user, product)){
                 return new ResponseEntity(new ApiResponse(false, "Product already exist in Wishlist"), HttpStatus.BAD_REQUEST);
             } else {
@@ -60,13 +65,13 @@ public class WishlistController {
     public ResponseEntity<?> showAllWishlistFromUser(){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Set<Product> products = wishlistService.findAllProductInWishlistByUser(user);
-        Set<ProductInfoResponse> productInfoRespons = new HashSet<>();
+        Set<ProductInfoResponse> productInfoResponse = new HashSet<>();
         for(Product product : products){
             Market market = marketService.findMarketByProduct(product);
-            productInfoRespons.add(new ProductInfoResponse(product, market.getMarketId(), market.getMarketName()));
+            productInfoResponse.add(new ProductInfoResponse(product, market.getMarketId(), market.getMarketName()));
         }
 
-        return new ResponseEntity(productInfoRespons, HttpStatus.OK);
+        return new ResponseEntity(productInfoResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
