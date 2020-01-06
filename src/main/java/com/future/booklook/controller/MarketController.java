@@ -127,23 +127,22 @@ public class MarketController {
     public ResponseEntity<?> checkIfMarketIsBlocked(){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Set<Role> roles = user.getRoles();
-        for(Role role : roles){
-            if(role.getName().equals(RoleName.ROLE_MARKET_BLOCKED)){
-                Market market = user.getMarket();
-                BlockedMarket blockingStatus = blockedMarketService.findBlockedMarketByMarket(market);
+        Role blockRole = roleRepository.findByName(RoleName.ROLE_MARKET_BLOCKED)
+                .orElseThrow(() -> new AppException("Market Role not set."));
 
-                Date date = new Date();
-                Timestamp endTimeBlock = new Timestamp(date.getTime());
-                if(endTimeBlock.after(blockingStatus.getEndAt())){
-                    roles.remove(new Role(RoleName.ROLE_MARKET_BLOCKED));
-                    user.setRoles(roles);
-                    userService.save(user);
-                    blockedMarketService.removeBlockedMarket(blockingStatus);
+        if(roles.contains(blockRole)){
+            Market market = user.getMarket();
+            BlockedMarket blockingStatus = blockedMarketService.findBlockedMarketByMarket(market);
 
-                    return new ResponseEntity(new ApiResponse(true, "Market is allowed to be accessed"), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity(new ApiResponse(false, "Market is still blocked by administrator"), HttpStatus.OK);
-                }
+            Date date = new Date();
+            Timestamp endTimeBlock = new Timestamp(date.getTime());
+            if(endTimeBlock.after(blockingStatus.getEndAt())){
+                roles.remove(blockRole);
+                user.setRoles(roles);
+                userService.save(user);
+                blockedMarketService.removeBlockedMarket(blockingStatus);
+            } else {
+                return new ResponseEntity(new ApiResponse(false, "Market is still blocked by administrator"), HttpStatus.OK);
             }
         }
 

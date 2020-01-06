@@ -134,6 +134,31 @@ public class AdminController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
+    @PostMapping("/unblock/market/{marketId}")
+    public ResponseEntity<?> unblockMarket(@PathVariable String marketId){
+        if(!(marketService.marketExistByMarketId(marketId))){
+            return new ResponseEntity(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
+        }
+
+        Market market = marketService.findByMarketId(marketId);
+        if(!(blockedMarketService.marketAlreadyBlockedBefore(market))){
+            return new ResponseEntity(new ApiResponse(false, "Market never be blocked"), HttpStatus.BAD_REQUEST);
+        }
+
+        User user = market.getUser();
+        Set<Role> roles = user.getRoles();
+        Role blockRole = roleRepository.findByName(RoleName.ROLE_MARKET_BLOCKED)
+                .orElseThrow(() -> new AppException("Market Role not set."));
+        roles.remove(blockRole);
+        user.setRoles(roles);
+        userService.save(user);
+
+        BlockedMarket blockedMarket = blockedMarketService.findBlockedMarketByMarket(market);
+        blockedMarketService.removeBlockedMarket(blockedMarket);
+
+        return new ResponseEntity(new ApiResponse(true, "Market has been unblocked successfully"), HttpStatus.OK);
+    }
+
     public UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
