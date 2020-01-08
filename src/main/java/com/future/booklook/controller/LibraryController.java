@@ -1,11 +1,13 @@
 package com.future.booklook.controller;
 
 import com.future.booklook.model.entity.Library;
+import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.payload.ApiResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.LibraryServiceImpl;
+import com.future.booklook.service.impl.ProductServiceImpl;
 import com.future.booklook.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class LibraryController {
     private UserServiceImpl userService;
 
     @Autowired
+    private ProductServiceImpl productService;
+
+    @Autowired
     private FileStorageServiceImpl fileStorageService;
 
     @GetMapping("")
@@ -49,15 +54,19 @@ public class LibraryController {
 
     @GetMapping("/books/{userId}/{key}/{fileName:.+}")
     public ResponseEntity<?> getBookFromLibrary(@PathVariable String userId, @PathVariable String key, @PathVariable String fileName, HttpServletRequest request){
-        if(!(userService.userExistByUserId(userId))){
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-
-        User user = userService.findByUserId(userId);
-        if(libraryService.existsByUserAndUniqueKey(user, key)){
-            Library library = libraryService.findByUserAndUniqueKey(user, key);
-            library.setUniqueKey(generateRandomString());
-            libraryService.save(library);
+        if(userService.userExistByUserIdAndReadKey(userId, key)){
+            User user = userService.findByUserId(userId);
+            if(productService.existsByProductId(fileName)){
+                Product product = productService.findProductByProductFilename(fileName);
+                if(libraryService.existByUserAndProduct(user, product)){
+                    user.setReadKey(generateRandomString());
+                    userService.save(user);
+                } else {
+                    return new ResponseEntity(HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }

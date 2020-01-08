@@ -19,12 +19,12 @@ public class LibraryServiceImpl implements LibraryService {
         return libraryRepository.save(library);
     }
 
-    public Boolean existsByUserAndUniqueKey(User user, String key){
-        return libraryRepository.existsByUserAndUniqueKey(user, key);
+    public Boolean existsByUser(User user){
+        return libraryRepository.existsByUser(user);
     }
 
-    public Library findByUserAndUniqueKey(User user, String key){
-        return libraryRepository.findByUserAndUniqueKey(user, key);
+    public Library findByUserAndProduct(User user, Product product){
+        return libraryRepository.findByUserAndProduct(user, product);
     }
 
     public Set<Library> findAllByUser(User user){

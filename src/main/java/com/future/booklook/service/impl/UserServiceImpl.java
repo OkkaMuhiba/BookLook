@@ -35,4 +35,12 @@ public class UserServiceImpl implements UserService {
     public Boolean existByEmail(String email){
         return userRepository.existsByUserId(email);
     }
+
+    public Boolean userExistByUserIdAndReadKey(String userId, String readKey){
+        return userRepository.existsByUserIdAndReadKey(userId, readKey);
+    }
+
+    public User findUserByUserIdAndReadKey(String userId, String readKey){
+        return userRepository.findByUserIdAndReadKey(userId, readKey);
+    }
 }

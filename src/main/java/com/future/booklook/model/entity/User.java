@@ -36,6 +36,9 @@ public class User{
     @Column(name = UserConstant.NUMBER_PHONE)
     private String numberPhone;
 
+    @Column(name = UserConstant.READ_KEY)
+    private String readKey;
+
     @Column(name = UserConstant.USER_PHOTO)
     private String userPhoto;
 
@@ -130,6 +133,14 @@ public class User{
 
     public void setNumberPhone(String numberPhone) {
         this.numberPhone = numberPhone;
+    }
+
+    public String getReadKey() {
+        return readKey;
+    }
+
+    public void setReadKey(String readKey) {
+        this.readKey = readKey;
     }
 
     public String getUserPhoto() {

@@ -26,6 +26,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     Product findByProductFileContaining(String fileName);
 
+    Boolean existsByProductFileContaining(String fileName);
+
     Product findByTransactionDetails(Set<TransactionDetail> transactionDetails);
 
     Set<Product> findAllByProductConfirm(ProductConfirm productConfirm);

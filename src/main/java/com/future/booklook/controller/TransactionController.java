@@ -135,8 +135,9 @@ public class TransactionController {
 
                 User buyerUser = transactionService.findUserFromTransaction(transaction);
                 Library library = new Library(buyerUser, product);
-                library.setUniqueKey(generateRandomString());
+                buyerUser.setReadKey(generateRandomString());
                 libraryService.save(library);
+                userService.save(buyerUser);
             }
 
             if(transactionDetail.getMarketConfirm().equals(MarketConfirm.UNCONFIRMED)){
@@ -221,7 +222,8 @@ public class TransactionController {
 
                 Product product = transactionDetail.getProduct();
                 Library library = new Library(buyerUser, product);
-                library.setUniqueKey(generateRandomString());
+                buyerUser.setReadKey(generateRandomString());
+                userService.save(buyerUser);
                 libraryService.save(library);
             }
         }

@@ -11,9 +11,9 @@ import java.util.Set;
 
 @Repository
 public interface LibraryRepository extends JpaRepository<Library, String> {
-    Library findByUserAndUniqueKey(User user, String uniqueKey);
+    Library findByUserAndProduct(User user, Product product);
 
-    Boolean existsByUserAndUniqueKey(User user, String uniqueKey);
+    Boolean existsByUser(User user);
 
     Boolean existsByUserAndProduct(User user, Product product);
 

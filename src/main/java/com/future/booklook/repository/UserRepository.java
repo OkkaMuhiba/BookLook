@@ -26,5 +26,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User findByTransactions(Set<Transaction> transactions);
 
-    
+    Boolean existsByUserIdAndReadKey(String userId, String readKey);
+
+    User findByUserIdAndReadKey(String userId, String readKey);
 }
