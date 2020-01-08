@@ -14,7 +14,10 @@ import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,8 +25,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Random;
 import java.util.Set;
 
 @Api
@@ -44,6 +50,9 @@ public class MarketController {
 
     @Autowired
     private BlockedMarketServiceImpl blockedMarketService;
+
+    @Autowired
+    private ProductServiceImpl productService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createMarket(@RequestBody CreateMarketRequest marketRequest){
@@ -75,6 +84,7 @@ public class MarketController {
                 .orElseThrow(() -> new AppException("Market Role not set."));
         roles.add(marketRole);
         user.setRoles(roles);
+        user.setReadKey(generateRandomString());
         userService.save(user);
 
         marketService.save(market);
@@ -150,9 +160,60 @@ public class MarketController {
         return new ResponseEntity(new ApiResponse(true, "Market is allowed to be accessed"), HttpStatus.OK);
     }
 
+    @GetMapping("/check-book/{userId}/{key}/{fileName}")
+    public ResponseEntity<?> checkBooksFromAdmin(@PathVariable String userId, @PathVariable String key, @PathVariable String fileName, HttpServletRequest request){
+        if(userService.userExistByUserIdAndReadKey(userId, key)){
+            User user = userService.findByUserId(userId);
+            if(productService.productExistByFilename(fileName)){
+                user.setReadKey(generateRandomString());
+                userService.save(user);
+            } else {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        // Load file as Resource
+        Resource resource = fileStorageService.loadFileAsResource("books/"+fileName);
+
+        // Try to determine file's content type
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            return new ResponseEntity(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+                .body(resource);
+    }
+
     public UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         return user;
+    }
+
+    private String generateRandomString(){
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 16;
+        Random random = new Random();
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return generatedString;
     }
 }

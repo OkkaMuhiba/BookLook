@@ -56,7 +56,7 @@ public class LibraryController {
     public ResponseEntity<?> getBookFromLibrary(@PathVariable String userId, @PathVariable String key, @PathVariable String fileName, HttpServletRequest request){
         if(userService.userExistByUserIdAndReadKey(userId, key)){
             User user = userService.findByUserId(userId);
-            if(productService.existsByProductId(fileName)){
+            if(productService.productExistByFilename(fileName)){
                 Product product = productService.findProductByProductFilename(fileName);
                 if(libraryService.existByUserAndProduct(user, product)){
                     user.setReadKey(generateRandomString());

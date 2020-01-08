@@ -40,6 +40,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAllByMarketAndProductConfirm(market, ProductConfirm.CONFIRMED);
     }
 
+    public Boolean productExistByFilename(String filename){
+        return productRepository.existsByProductFileContaining(filename);
+    }
+
     public Product findProductByProductFilename(String filename){
         return productRepository.findByProductFileContaining(filename);
     }
