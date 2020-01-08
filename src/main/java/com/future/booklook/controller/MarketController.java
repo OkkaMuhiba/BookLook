@@ -11,10 +11,7 @@ import com.future.booklook.payload.CreateMarketRequest;
 import com.future.booklook.payload.EditMarket;
 import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.security.UserPrincipal;
-import com.future.booklook.service.impl.BlockedMarketServiceImpl;
-import com.future.booklook.service.impl.FileStorageServiceImpl;
-import com.future.booklook.service.impl.MarketServiceImpl;
-import com.future.booklook.service.impl.UserServiceImpl;
+import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +40,7 @@ public class MarketController {
     private FileStorageServiceImpl fileStorageService;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleServiceImpl roleService;
 
     @Autowired
     private BlockedMarketServiceImpl blockedMarketService;
@@ -74,7 +71,7 @@ public class MarketController {
         );
 
         Set<Role> roles = user.getRoles();
-        Role marketRole = roleRepository.findByName(RoleName.ROLE_MARKET)
+        Role marketRole = roleService.findByRoleName(RoleName.ROLE_MARKET)
                 .orElseThrow(() -> new AppException("Market Role not set."));
         roles.add(marketRole);
         user.setRoles(roles);
@@ -131,7 +128,7 @@ public class MarketController {
     public ResponseEntity<?> checkIfMarketIsBlocked(){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Set<Role> roles = user.getRoles();
-        Role blockRole = roleRepository.findByName(RoleName.ROLE_MARKET_BLOCKED)
+        Role blockRole = roleService.findByRoleName(RoleName.ROLE_MARKET_BLOCKED)
                 .orElseThrow(() -> new AppException("Market Role not set."));
 
         if(roles.contains(blockRole)){

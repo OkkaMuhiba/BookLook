@@ -13,6 +13,8 @@ import com.future.booklook.repository.UserRepository;
 import com.future.booklook.security.JwtTokenProvider;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
+import com.future.booklook.service.impl.RoleServiceImpl;
+import com.future.booklook.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,10 +40,10 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    private UserServiceImpl userService;
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleServiceImpl roleService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -49,15 +51,12 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
-    @Autowired
-    FileStorageServiceImpl fileStorageService;
-
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationAttempt(loginRequest);
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        User user = userRepository.findByUserId(userPrincipal.getUserId());
+        User user = userService.findByUserId(userPrincipal.getUserId());
         Set<Role> roles = user.getRoles();
         Boolean authenticatedStatus = true;
         for(Role role : roles){
@@ -82,7 +81,7 @@ public class AuthController {
         Authentication authentication = authenticationAttempt(loginRequest);
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        User user = userRepository.findByUserId(userPrincipal.getUserId());
+        User user = userService.findByUserId(userPrincipal.getUserId());
         Set<Role> roles = user.getRoles();
         Boolean authenticatedStatus = false;
         for(Role role : roles){
@@ -105,12 +104,12 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        if (userService.existByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (userService.existByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -126,7 +125,7 @@ public class AuthController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+        Role userRole = roleService.findByRoleName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
 
         user.setRoles(Collections.singleton(userRole));

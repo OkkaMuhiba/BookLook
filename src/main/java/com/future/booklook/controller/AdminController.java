@@ -43,7 +43,7 @@ public class AdminController {
     private TransactionServiceImpl transactionService;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleServiceImpl roleService;
 
     @GetMapping("/products/unconfirmed")
     public ResponseEntity<?> getAllProductWithUnconfirmedStatus(){
@@ -96,7 +96,7 @@ public class AdminController {
         User user = market.getUser();
         Set<Role> roles = user.getRoles();
 
-        Role blockRole = roleRepository.findByName(RoleName.ROLE_MARKET_BLOCKED)
+        Role blockRole = roleService.findByRoleName(RoleName.ROLE_MARKET_BLOCKED)
                 .orElseThrow(() -> new AppException("Market Role not set."));
         
         if(roles.contains(blockRole)){
@@ -147,7 +147,7 @@ public class AdminController {
 
         User user = market.getUser();
         Set<Role> roles = user.getRoles();
-        Role blockRole = roleRepository.findByName(RoleName.ROLE_MARKET_BLOCKED)
+        Role blockRole = roleService.findByRoleName(RoleName.ROLE_MARKET_BLOCKED)
                 .orElseThrow(() -> new AppException("Market Role not set."));
         roles.remove(blockRole);
         user.setRoles(roles);

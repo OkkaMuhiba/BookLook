@@ -27,4 +27,12 @@ public class UserServiceImpl implements UserService {
     public Long getTotalUserInNumber(){
         return userRepository.count();
     }
+
+    public Boolean existByUsername(String username){
+        return userRepository.existsByUsername(username);
+    }
+
+    public Boolean existByEmail(String email){
+        return userRepository.existsByUserId(email);
+    }
 }
