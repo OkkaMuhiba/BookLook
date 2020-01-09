@@ -11,8 +11,8 @@ INSERT INTO users(user_id, name, username, email, password)
 VALUES('d24146e7-0563-41db-9375-a4f4637a2c50','Handi Hermawan', 'handihermawan', 'test2@mail.com', '$2a$10$BOUuYbflXEBSeHpQJ0aRWuKzUCDX4GV6TjVIZjzAkmAYgyIY349Eu')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO users(user_id, name, username, email, password)
-VALUES('07ecd5dd-e652-400d-8821-c8e8107b12dd','Admin123', 'admin123', 'test3@mail.com', '$2a$10$sYDOwjpH74sZDdVtpEmJJ.iYMp1Gi6B3hJ8lMBCIWzG6otLmgFP4W')
+INSERT INTO users(user_id, name, username, email, password, read_key)
+VALUES('07ecd5dd-e652-400d-8821-c8e8107b12dd','Admin123', 'admin123', 'test3@mail.com', '$2a$10$sYDOwjpH74sZDdVtpEmJJ.iYMp1Gi6B3hJ8lMBCIWzG6otLmgFP4W', '9UlLlXTxbBRMhgR4')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO user_roles
