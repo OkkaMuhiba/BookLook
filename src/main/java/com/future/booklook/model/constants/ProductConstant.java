@@ -4,6 +4,7 @@ public class ProductConstant {
     public static final String TABLE_NAME = "products";
     public static final String PRODUCT_ID = "product_id";
     public static final String TITLE = "title";
+    public static final String PAGE_TOTAL = "page_total";
     public static final String AUTHOR = "author";
     public static final String PUBLISHER = "publisher";
     public static final String ISBN = "isbn";

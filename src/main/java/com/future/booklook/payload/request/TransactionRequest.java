@@ -1,4 +1,4 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.request;
 
 import java.util.Set;
 

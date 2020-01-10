@@ -1,8 +1,7 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.request;
 
-public class CreateMarketRequest {
+public class EditMarketRequest {
     private String marketName;
-    private String marketSKU;
     private String marketBio;
 
     public String getMarketName() {
@@ -11,14 +10,6 @@ public class CreateMarketRequest {
 
     public void setMarketName(String marketName) {
         this.marketName = marketName;
-    }
-
-    public String getMarketSKU() {
-        return marketSKU;
-    }
-
-    public void setMarketSKU(String marketSKU) {
-        this.marketSKU = marketSKU;
     }
 
     public String getMarketBio() {

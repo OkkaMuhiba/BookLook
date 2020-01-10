@@ -4,10 +4,9 @@ import com.future.booklook.model.entity.Category;
 import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
-import com.future.booklook.model.entity.properties.ProductConfirm;
-import com.future.booklook.payload.ApiResponse;
-import com.future.booklook.payload.EditProduct;
-import com.future.booklook.payload.ProductInfoResponse;
+import com.future.booklook.payload.response.ApiResponse;
+import com.future.booklook.payload.request.EditProductRequest;
+import com.future.booklook.payload.response.ProductInfoResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
@@ -45,11 +44,11 @@ public class ProductController {
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(
             @RequestParam("title") String title,
+            @RequestParam("pageTotal") Long pageTotal,
             @RequestParam("description") String description,
             @RequestParam("author") String author,
             @RequestParam("publisher") String publisher,
             @RequestParam("isbn") String isbn,
-            @RequestParam("sku") String sku,
             @RequestParam("price") String price,
             @RequestParam("picture") MultipartFile picture,
             @RequestParam("book") MultipartFile book,
@@ -81,12 +80,17 @@ public class ProductController {
                 .path(fileName)
                 .toUriString();
 
+        Long totalProduct = market.getTotalProduct() + 1;
+        String newSku = market.getMarketCode()+"-"+(totalProduct);
+        market.setTotalProduct(totalProduct);
+
         Product product = new Product(
                 title,
+                pageTotal,
                 author,
                 publisher,
                 isbn,
-                market.getMarketSKU()+"-"+sku,
+                newSku,
                 description,
                 Long.parseLong(price),
                 categoriesSet,
@@ -95,6 +99,7 @@ public class ProductController {
                 bookUri
         );
 
+        marketService.save(market);
         productService.save(product);
         return new ResponseEntity(new ApiResponse(true, "Product created successfully"), HttpStatus.CREATED);
     }
@@ -121,11 +126,11 @@ public class ProductController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<?> editProduct(@RequestBody EditProduct editProduct){
-        Product product = productService.findByProductId(editProduct.getProductId());
+    public ResponseEntity<?> editProduct(@RequestBody EditProductRequest editProductRequest){
+        Product product = productService.findByProductId(editProductRequest.getProductId());
 
-        product.setPrice(Long.parseLong(editProduct.getPrice()));
-        product.setDescription(editProduct.getDescription());
+        product.setPrice(Long.parseLong(editProductRequest.getPrice()));
+        product.setDescription(editProductRequest.getDescription());
 
         productService.save(product);
         return new ResponseEntity(new ApiResponse(true, "Product has been Edited successfully"), HttpStatus.OK);

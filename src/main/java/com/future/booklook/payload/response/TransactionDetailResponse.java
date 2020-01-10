@@ -1,4 +1,4 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.response;
 
 import com.future.booklook.model.entity.Transaction;
 import com.future.booklook.model.entity.TransactionDetail;

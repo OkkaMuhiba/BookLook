@@ -1,9 +1,9 @@
 package com.future.booklook.controller;
 
 import com.future.booklook.model.entity.*;
-import com.future.booklook.payload.ApiResponse;
-import com.future.booklook.payload.BucketRequest;
-import com.future.booklook.payload.ProductInfoResponse;
+import com.future.booklook.payload.response.ApiResponse;
+import com.future.booklook.payload.request.BucketRequest;
+import com.future.booklook.payload.response.ProductInfoResponse;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;

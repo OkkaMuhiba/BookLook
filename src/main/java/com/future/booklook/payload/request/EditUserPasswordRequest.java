@@ -1,6 +1,6 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.request;
 
-public class EditUserPassword {
+public class EditUserPasswordRequest {
     private String oldPassword;
     private String newPassword;
 

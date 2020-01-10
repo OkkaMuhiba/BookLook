@@ -21,7 +21,7 @@ public interface MarketRepository extends JpaRepository<Market, String> {
 
     Boolean existsByMarketName(String marketName);
 
-    Boolean existsByMarketSKU(String SKU);
+    Boolean existsByMarketCode(String marketCode);
 
     Boolean existsByUser(User user);
 

@@ -2,8 +2,8 @@ package com.future.booklook.controller;
 
 
 import com.future.booklook.model.entity.Category;
-import com.future.booklook.payload.ApiResponse;
-import com.future.booklook.payload.CreateCategory;
+import com.future.booklook.payload.response.ApiResponse;
+import com.future.booklook.payload.request.CreateCategoryRequest;
 import com.future.booklook.service.impl.CategoryServiceImpl;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class CategoryController {
     CategoryServiceImpl categoryService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCategory(@RequestBody CreateCategory category){
+    public ResponseEntity<?> createCategory(@RequestBody CreateCategoryRequest category){
         categoryService.save(new Category(category.getCategoryName()));
         return new ResponseEntity(new ApiResponse(true, "Category created successfully"), HttpStatus.CREATED);
     }

@@ -1,13 +1,15 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.response;
 
 import com.future.booklook.model.entity.Product;
 
-public class ProductInfoResponse {
-    Product product;
-    String marketId;
-    String marketName;
+public class UnconfirmedProductResponse {
+    private Product product;
 
-    public ProductInfoResponse(Product product, String marketId, String marketName) {
+    private String marketId;
+
+    private String marketName;
+
+    public UnconfirmedProductResponse(Product product, String marketId, String marketName) {
         this.product = product;
         this.marketId = marketId;
         this.marketName = marketName;

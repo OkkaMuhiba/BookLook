@@ -4,15 +4,12 @@ import com.future.booklook.exception.AppException;
 import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.model.entity.User;
-import com.future.booklook.payload.ApiResponse;
-import com.future.booklook.payload.JwtAuthenticationResponse;
-import com.future.booklook.payload.LoginRequest;
-import com.future.booklook.payload.SignUpRequest;
-import com.future.booklook.repository.RoleRepository;
-import com.future.booklook.repository.UserRepository;
+import com.future.booklook.payload.response.ApiResponse;
+import com.future.booklook.payload.response.JwtAuthenticationResponse;
+import com.future.booklook.payload.request.SignInRequest;
+import com.future.booklook.payload.request.SignUpRequest;
 import com.future.booklook.security.JwtTokenProvider;
 import com.future.booklook.security.UserPrincipal;
-import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.RoleServiceImpl;
 import com.future.booklook.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
@@ -25,10 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
@@ -52,8 +47,8 @@ public class AuthController {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationAttempt(loginRequest);
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignInRequest signInRequest) {
+        Authentication authentication = authenticationAttempt(signInRequest);
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User user = userService.findByUserId(userPrincipal.getUserId());
@@ -77,8 +72,8 @@ public class AuthController {
     }
 
     @PostMapping("/admin/signin")
-    public ResponseEntity<?> authenticateAdmin(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationAttempt(loginRequest);
+    public ResponseEntity<?> authenticateAdmin(@Valid @RequestBody SignInRequest signInRequest) {
+        Authentication authentication = authenticationAttempt(signInRequest);
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User user = userService.findByUserId(userPrincipal.getUserId());
@@ -133,11 +128,11 @@ public class AuthController {
         return new ResponseEntity(new ApiResponse(true, "User registered successfully"), HttpStatus.OK);
     }
 
-    public Authentication authenticationAttempt(LoginRequest loginRequest){
+    public Authentication authenticationAttempt(SignInRequest signInRequest){
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
-                        loginRequest.getPassword()
+                        signInRequest.getUsernameOrEmail(),
+                        signInRequest.getPassword()
                 )
         );
     }

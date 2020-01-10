@@ -1,6 +1,6 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.request;
 
-public class EditMarket {
+public class CreateMarketRequest {
     private String marketName;
     private String marketBio;
 

@@ -1,4 +1,4 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.response;
 
 public class JwtAuthenticationResponse {
     private Boolean status;

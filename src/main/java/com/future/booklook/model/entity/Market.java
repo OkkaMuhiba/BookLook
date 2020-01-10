@@ -33,8 +33,11 @@ public class Market {
     @Column(name = MarketConstant.MARKET_PHOTO)
     private String marketPhoto;
 
-    @Column(name = MarketConstant.MARKET_SKU)
-    private String marketSKU;
+    @Column(name = MarketConstant.MARKET_CODE)
+    private String marketCode;
+
+    @Column(name = MarketConstant.TOTAL_PRODUCT)
+    private Long totalProduct;
 
     @Column(name = MarketConstant.CREATED_AT)
     @CreationTimestamp
@@ -53,12 +56,13 @@ public class Market {
     @OneToMany(mappedBy = "market", fetch = FetchType.LAZY)
     private Set<Product> products;
 
-    public Market(String marketName, String marketBio, String marketSKU, String userID, User user) {
+    public Market(String marketName, String marketBio, String marketCode, String userID, User user) {
         this.marketName = marketName;
         this.marketBio = marketBio;
-        this.marketSKU = marketSKU;
+        this.marketCode = marketCode;
         this.userID = userID;
         this.user = user;
+        this.totalProduct = new Long(0);
     }
 
     public Market() {
@@ -105,12 +109,20 @@ public class Market {
         this.marketPhoto = marketPhoto;
     }
 
-    public String getMarketSKU() {
-        return marketSKU;
+    public String getMarketCode() {
+        return marketCode;
     }
 
-    public void setMarketSKU(String marketSKU) {
-        this.marketSKU = marketSKU;
+    public void setMarketCode(String marketCode) {
+        this.marketCode = marketCode;
+    }
+
+    public Long getTotalProduct() {
+        return totalProduct;
+    }
+
+    public void setTotalProduct(Long totalProduct) {
+        this.totalProduct = totalProduct;
     }
 
     public Timestamp getCreatedAt() {

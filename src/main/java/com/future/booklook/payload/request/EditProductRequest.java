@@ -1,6 +1,6 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.request;
 
-public class EditProduct {
+public class EditProductRequest {
     private String productId;
     private String price;
     private String description;

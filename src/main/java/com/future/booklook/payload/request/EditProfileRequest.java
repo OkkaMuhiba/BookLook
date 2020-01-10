@@ -1,10 +1,9 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.request;
 
-public class SignUpRequest {
+public class EditProfileRequest {
     private String name;
     private String username;
     private String email;
-    private String password;
     private String numberPhone;
 
     public String getName() {
@@ -29,14 +28,6 @@ public class SignUpRequest {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getNumberPhone() {

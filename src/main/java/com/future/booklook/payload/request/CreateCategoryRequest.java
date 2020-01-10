@@ -1,6 +1,6 @@
-package com.future.booklook.payload;
+package com.future.booklook.payload.request;
 
-public class CreateCategory {
+public class CreateCategoryRequest {
     String CategoryName;
 
     public String getCategoryName() {

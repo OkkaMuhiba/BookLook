@@ -6,10 +6,9 @@ import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.model.entity.properties.RoleName;
-import com.future.booklook.payload.ApiResponse;
-import com.future.booklook.payload.CreateMarketRequest;
-import com.future.booklook.payload.EditMarket;
-import com.future.booklook.repository.RoleRepository;
+import com.future.booklook.payload.response.ApiResponse;
+import com.future.booklook.payload.request.CreateMarketRequest;
+import com.future.booklook.payload.request.EditMarketRequest;
 import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.*;
 import io.swagger.annotations.Api;
@@ -67,14 +66,22 @@ public class MarketController {
             return new ResponseEntity(new ApiResponse(false, "Market name have been taken by another user"), HttpStatus.BAD_REQUEST);
         }
 
-        if(marketService.MarketSKUAlreadyExist(marketRequest.getMarketSKU())){
-            return new ResponseEntity(new ApiResponse(false, "Market SKU have been taken by another user"), HttpStatus.BAD_REQUEST);
+        String acceptedMarketCode;
+        int endIndex = 2;
+        while(true){
+            acceptedMarketCode = marketRequest.getMarketName().toUpperCase().substring(0, endIndex);
+
+            if(marketService.MarketCodeAlreadyExist(acceptedMarketCode)){
+                endIndex++;
+            } else {
+                break;
+            }
         }
 
         Market market = new Market(
                 marketRequest.getMarketName(),
                 marketRequest.getMarketBio(),
-                marketRequest.getMarketSKU(),
+                acceptedMarketCode,
                 userId,
                 user
         );
@@ -85,8 +92,8 @@ public class MarketController {
         roles.add(marketRole);
         user.setRoles(roles);
         user.setReadKey(generateRandomString());
-        userService.save(user);
 
+        userService.save(user);
         marketService.save(market);
         return new ResponseEntity(new ApiResponse(true, "Market created successfully"), HttpStatus.CREATED);
     }
@@ -106,12 +113,12 @@ public class MarketController {
     }
 
     @PutMapping("/edit/profile")
-    public ResponseEntity<?> editMarketProfile(@RequestBody EditMarket editMarket){
+    public ResponseEntity<?> editMarketProfile(@RequestBody EditMarketRequest editMarketRequest){
         String userId = getUserPrincipal().getUserId();
         Market market = userService.findByUserId(userId).getMarket();
 
-        market.setMarketName(editMarket.getMarketName());
-        market.setMarketBio(editMarket.getMarketBio());
+        market.setMarketName(editMarketRequest.getMarketName());
+        market.setMarketBio(editMarketRequest.getMarketBio());
 
         marketService.save(market);
         return new ResponseEntity(new ApiResponse(true, "Market has been edited successfully"), HttpStatus.OK);
