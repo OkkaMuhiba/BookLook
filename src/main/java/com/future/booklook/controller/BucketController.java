@@ -40,14 +40,14 @@ public class BucketController {
     public ResponseEntity<?> addProductIntoBucket(@RequestBody BucketRequest bucketRequest){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         if(!(productService.existsByProductId(bucketRequest.getProductId()))){
-            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         Product product = productService.findByProductId(bucketRequest.getProductId());
         if(basketService.existsByUser(user)){
             Basket basket = basketService.findByUser(user);
             if(basketDetailService.existsByBasketAndProduct(basket, product)){
-                return new ResponseEntity(new ApiResponse(false, "Product already exists in Basket"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse(false, "Product already exists in Basket"), HttpStatus.BAD_REQUEST);
             } else {
                 basketDetailService.save(new BasketDetail(basket, product));
             }
@@ -56,7 +56,7 @@ public class BucketController {
             basketDetailService.save(new BasketDetail(basket, product));
         }
 
-        return new ResponseEntity(new ApiResponse(true, "Product has been saved in Basket"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse(true, "Product has been saved in Basket"), HttpStatus.CREATED);
     }
 
     @GetMapping("")
@@ -70,14 +70,14 @@ public class BucketController {
             productInfoRespons.add(new ProductInfoResponse(product, market.getMarketId(), market.getMarketName()));
         }
 
-        return new ResponseEntity(productInfoRespons, HttpStatus.OK);
+        return new ResponseEntity<>(productInfoRespons, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteProductFromBasket(@RequestBody BucketRequest bucketRequest){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         if(!(productService.existsByProductId(bucketRequest.getProductId()))){
-            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         Product product = productService.findByProductId(bucketRequest.getProductId());
@@ -86,18 +86,17 @@ public class BucketController {
             if(basketDetailService.existsByBasketAndProduct(basket, product)){
                 basketDetailService.deleteByBasketAndProduct(basket, product);
             } else {
-                return new ResponseEntity(new ApiResponse(false, "Product does not exist in your basket"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse(false, "Product does not exist in your basket"), HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity(new ApiResponse(false, "There's no product on your basket"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "There's no product on your basket"), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity(new ApiResponse(true, "Product has been removed from basket"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Product has been removed from basket"), HttpStatus.OK);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 }

@@ -101,7 +101,7 @@ public class ProductController {
 
         marketService.save(market);
         productService.save(product);
-        return new ResponseEntity(new ApiResponse(true, "Product created successfully"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse(true, "Product created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("/category/{categoryName}")
@@ -110,9 +110,7 @@ public class ProductController {
         Set<Category> categoriesSet = new HashSet<>();
         categoriesSet.add(category);
 
-        Set<Product> products = productService.findProductsByCategories(categoriesSet);
-
-        return products;
+        return productService.findProductsByCategories(categoriesSet);
     }
 
     @GetMapping("/{productId}")
@@ -122,7 +120,7 @@ public class ProductController {
         String marketId = market.getMarketId();
         String marketName = market.getMarketName();
 
-        return new ResponseEntity(new ProductInfoResponse(product, marketId, marketName), HttpStatus.OK);
+        return new ResponseEntity<>(new ProductInfoResponse(product, marketId, marketName), HttpStatus.OK);
     }
 
     @PutMapping("/edit")
@@ -133,15 +131,14 @@ public class ProductController {
         product.setDescription(editProductRequest.getDescription());
 
         productService.save(product);
-        return new ResponseEntity(new ApiResponse(true, "Product has been Edited successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Product has been Edited successfully"), HttpStatus.OK);
     }
 
     @PutMapping("/edit/photo")
     public ResponseEntity<?> editPhotoProduct(@RequestParam String productId, @RequestParam MultipartFile picture){
         Product product = productService.findByProductId(productId);
 
-        MultipartFile pictureFile = picture;
-        String fileName = fileStorageService.storeFile(pictureFile, "products");
+        String fileName = fileStorageService.storeFile(picture, "products");
         String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/products/")
                 .path(fileName)
@@ -149,15 +146,14 @@ public class ProductController {
 
         product.setProductPhoto(photoUri);
         productService.save(product);
-        return new ResponseEntity(new ApiResponse(true, "Product Photo has been Edited successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Product Photo has been Edited successfully"), HttpStatus.OK);
     }
 
     @PutMapping("/edit/book")
     public ResponseEntity<?> editFileProduct(@RequestParam String productId, @RequestParam MultipartFile book){
         Product product = productService.findByProductId(productId);
 
-        MultipartFile pictureFile = book;
-        String fileName = fileStorageService.storeFile(pictureFile, "books");
+        String fileName = fileStorageService.storeFile(book, "books");
         String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/books/")
                 .path(fileName)
@@ -165,19 +161,19 @@ public class ProductController {
 
         product.setProductPhoto(bookUri);
         productService.save(product);
-        return new ResponseEntity(new ApiResponse(true, "Book file has been Edited successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Book file has been Edited successfully"), HttpStatus.OK);
     }
 
     @GetMapping("/market/{marketId}")
     public ResponseEntity<?> allProductFromMarket(@PathVariable String marketId){
         if(!(marketService.marketExistByMarketId(marketId))){
-            return new ResponseEntity(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         Market market = marketService.findByMarketId(marketId);
         Set<Product> products = productService.findAllByMarketAndConfirmed(market);
 
-        return new ResponseEntity(products, HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/market/auth/all")
@@ -186,12 +182,11 @@ public class ProductController {
         Market market = user.getMarket();
         Set<Product> products = productService.findAllByMarket(market);
 
-        return new ResponseEntity(products, HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 }

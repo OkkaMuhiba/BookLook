@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
@@ -65,7 +64,7 @@ public class AuthController {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User user = userService.findByUserId(userPrincipal.getUserId());
         Set<Role> roles = user.getRoles();
-        Boolean authenticatedStatus = true;
+        Boolean authenticatedStatus = Boolean.TRUE;
         String blockedUntil = null;
         for(Role role : roles){
             if(role.getName().equals(RoleName.ROLE_ADMIN)){
@@ -84,9 +83,9 @@ public class AuthController {
 
         if(!(authenticatedStatus)){
             if(blockedUntil == null){
-                return new ResponseEntity(new JwtAuthenticationResponse(false, "You're not allowed to login"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new JwtAuthenticationResponse(false, "You're not allowed to login"), HttpStatus.BAD_REQUEST);
             } else {
-                return new ResponseEntity(new JwtAuthenticationResponse(false, "You're blocked by admin, until "+blockedUntil), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new JwtAuthenticationResponse(false, "You're blocked by admin, until "+blockedUntil), HttpStatus.BAD_REQUEST);
             }
         }
 
@@ -106,13 +105,13 @@ public class AuthController {
         Boolean authenticatedStatus = false;
         for(Role role : roles){
             if(role.getName() == RoleName.ROLE_ADMIN){
-                authenticatedStatus = true;
+                authenticatedStatus = Boolean.TRUE;
                 break;
             }
         }
 
         if(!(authenticatedStatus)){
-            return new ResponseEntity(new JwtAuthenticationResponse(false, "You're not allowed to login"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new JwtAuthenticationResponse(false, "You're not allowed to login"), HttpStatus.BAD_REQUEST);
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -125,12 +124,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         if (userService.existByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
+            return new ResponseEntity<>(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
         }
 
         if (userService.existByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
+            return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -150,7 +149,7 @@ public class AuthController {
 
         user.setRoles(Collections.singleton(userRole));
 
-        return new ResponseEntity(new ApiResponse(true, "User registered successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "User registered successfully"), HttpStatus.OK);
     }
 
     @PostMapping("/signout")
@@ -171,7 +170,7 @@ public class AuthController {
         }
     }
 
-    public Authentication authenticationAttempt(SignInRequest signInRequest){
+    private Authentication authenticationAttempt(SignInRequest signInRequest){
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         signInRequest.getUsernameOrEmail(),

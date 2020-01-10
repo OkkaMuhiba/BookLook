@@ -56,11 +56,11 @@ public class MarketController {
         User user = userService.findByUserId(userId);
 
         if(marketService.marketExistByUser(user)){
-            return new ResponseEntity(new ApiResponse(false, "User already have market"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "User already have market"), HttpStatus.BAD_REQUEST);
         }
 
         if(marketService.marketNameAlreadyExist(marketRequest.getMarketName())){
-            return new ResponseEntity(new ApiResponse(false, "Market name have been taken by another user"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Market name have been taken by another user"), HttpStatus.BAD_REQUEST);
         }
 
         String acceptedMarketCode;
@@ -92,7 +92,7 @@ public class MarketController {
 
         userService.save(user);
         marketService.save(market);
-        return new ResponseEntity(new ApiResponse(true, "Market created successfully"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse(true, "Market created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("")
@@ -100,13 +100,13 @@ public class MarketController {
         String userId = getUserPrincipal().getUserId();
         User user = userService.findByUserId(userId);
 
-        return new ResponseEntity(marketService.findByUser(user), HttpStatus.OK);
+        return new ResponseEntity<>(marketService.findByUser(user), HttpStatus.OK);
     }
 
     @GetMapping("/{marketId}")
     public ResponseEntity<?> getMarketDataById(@PathVariable String marketId){
         Market market = marketService.findByMarketId(marketId);
-        return new ResponseEntity(market, HttpStatus.OK);
+        return new ResponseEntity<>(market, HttpStatus.OK);
     }
 
     @PutMapping("/edit/profile")
@@ -118,7 +118,7 @@ public class MarketController {
         market.setMarketBio(editMarketRequest.getMarketBio());
 
         marketService.save(market);
-        return new ResponseEntity(new ApiResponse(true, "Market has been edited successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Market has been edited successfully"), HttpStatus.OK);
     }
 
     @PutMapping("/edit/profile/photo")
@@ -126,8 +126,7 @@ public class MarketController {
         String userId = getUserPrincipal().getUserId();
         Market market = userService.findByUserId(userId).getMarket();
 
-        MultipartFile pictureFile = picture;
-        String fileName = fileStorageService.storeFile(pictureFile, "markets");
+        String fileName = fileStorageService.storeFile(picture, "markets");
         String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/markets/")
                 .path(fileName)
@@ -135,7 +134,7 @@ public class MarketController {
 
         market.setMarketPhoto(photoUri);
         marketService.save(market);
-        return new ResponseEntity(new ApiResponse(true, "Photo market has been edited successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Photo market has been edited successfully"), HttpStatus.OK);
     }
 
     @GetMapping("/check-book/{userId}/{key}/{fileName}")
@@ -156,11 +155,11 @@ public class MarketController {
         Resource resource = fileStorageService.loadFileAsResource("books/"+fileName);
 
         // Try to determine file's content type
-        String contentType = null;
+        String contentType;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
-            return new ResponseEntity(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         // Fallback to the default content type if type could not be determined
@@ -174,10 +173,9 @@ public class MarketController {
                 .body(resource);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){
@@ -186,12 +184,10 @@ public class MarketController {
         int targetStringLength = 16;
         Random random = new Random();
 
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return generatedString;
     }
 }

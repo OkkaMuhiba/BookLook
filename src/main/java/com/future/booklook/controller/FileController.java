@@ -90,10 +90,4 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-
-    public UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
-    }
 }

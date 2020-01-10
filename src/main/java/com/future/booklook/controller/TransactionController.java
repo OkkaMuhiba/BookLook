@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public class TransactionController {
     @PostMapping("/user/add")
     public ResponseEntity<?> addProductIntoTransaction(@RequestBody TransactionRequest transactionRequest){
         if(transactionRequest.getProducts().isEmpty()){
-            return new ResponseEntity(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByUserId(getUserPrincipal().getUserId());
@@ -66,7 +65,7 @@ public class TransactionController {
         Long checkout = new Long(0);
         for(String productId : transactionRequest.getProducts()){
             if(!(productService.existsByProductId(productId))){
-                return new ResponseEntity(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.BAD_REQUEST);
             }
             Product foundProduct = productService.findByProductId(productId);
             products.add(foundProduct);
@@ -81,7 +80,7 @@ public class TransactionController {
 
         for(Product product : products){
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){
-                return new ResponseEntity(new ApiResponse(false, "Some products are already exist in transaction"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse(false, "Some products are already exist in transaction"), HttpStatus.BAD_REQUEST);
             }
 
             Market market = marketService.findMarketByProduct(product);
@@ -99,7 +98,7 @@ public class TransactionController {
             }
         }
 
-        return new ResponseEntity(new ApiResponse(true, "Products have been added into transaction"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Products have been added into transaction"), HttpStatus.OK);
     }
 
     @GetMapping("/user/show")
@@ -107,7 +106,7 @@ public class TransactionController {
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Set<Transaction> transactions = transactionService.findAllTransactionByUser(user);
 
-        return new ResponseEntity(transactions, HttpStatus.OK);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
     @GetMapping("/user/show/{transactionCode}")
@@ -116,24 +115,24 @@ public class TransactionController {
         Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
 
         TransactionDetailResponse response = new TransactionDetailResponse(transaction, transactionDetails);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/user/confirm/{transactionCode}")
     public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionCode){
         if(!(transactionService.existsByTransactionCode(transactionCode))){
-            return new ResponseEntity(new ApiResponse(false, "The transaction cannot be confirmed"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "The transaction cannot be confirmed"), HttpStatus.BAD_REQUEST);
         }
 
         Transaction transaction = transactionService.findByTransactionCode(transactionCode);
         if(transaction.getTransferConfirm() != TransferConfirm.UNPAID){
-            return new ResponseEntity(new ApiResponse(false, "The transaction already confirmed"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "The transaction already confirmed"), HttpStatus.BAD_REQUEST);
         }
 
         transaction.setTransferConfirm(TransferConfirm.PENDING);
 
         Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
-        Boolean statusTransaction = true;
+        Boolean statusTransaction = Boolean.TRUE;
         for(TransactionDetail transactionDetail : transactionDetails){
             Product product = transactionDetail.getProduct();
             if(productIsPassedDirectlyIntoUser(product)){
@@ -152,13 +151,13 @@ public class TransactionController {
             }
         }
 
-        if(statusTransaction == true){
+        if(statusTransaction){
             transaction.setTransferConfirm(TransferConfirm.SUCCESS);
         }
 
         transactionService.save(transaction);
 
-        return new ResponseEntity(new ApiResponse(true, "Transfer have been confirmed. " +
+        return new ResponseEntity<>(new ApiResponse(true, "Transfer have been confirmed. " +
                 "Wait market for confirm your transfer to get the book."), HttpStatus.ACCEPTED);
     }
 
@@ -175,13 +174,13 @@ public class TransactionController {
             }
         }
 
-        return new ResponseEntity(selectedTransactions, HttpStatus.OK);
+        return new ResponseEntity<>(selectedTransactions, HttpStatus.OK);
     }
 
     @GetMapping("/market/show/{transactionCode}")
     public ResponseEntity<?> showTransactionDetailWithProductFromMarket(@PathVariable String transactionCode){
         if(!(transactionService.existsByTransactionCode(transactionCode))){
-            return new ResponseEntity(new ApiResponse(false, "The transaction doesn't exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "The transaction doesn't exist"), HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByUserId(getUserPrincipal().getUserId());
@@ -198,13 +197,13 @@ public class TransactionController {
         }
 
         TransactionDetailResponse response = new TransactionDetailResponse(transaction, transactionDetails);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/market/confirm/{transactionCode}")
     public ResponseEntity<?> confirmProductFromMarket(@PathVariable String transactionCode){
         if(!(transactionService.existsByTransactionCode(transactionCode))){
-            return new ResponseEntity(new ApiResponse(false, "There's no transaction be recorded"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "There's no transaction be recorded"), HttpStatus.BAD_REQUEST);
         }
 
         User marketUser = userService.findByUserId(getUserPrincipal().getUserId());
@@ -217,11 +216,11 @@ public class TransactionController {
         for(TransactionDetail transactionDetail : transactionDetails){
             if(transactionDetail.getMarketId().equals(market.getMarketId())){
                 if(transaction.getTransferConfirm() == TransferConfirm.UNPAID){
-                    return new ResponseEntity(new ApiResponse(false, "The user haven't paid this product"), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ApiResponse(false, "The user haven't paid this product"), HttpStatus.BAD_REQUEST);
                 }
 
                 if(transactionDetail.getMarketConfirm() == MarketConfirm.CONFIRMED){
-                    return new ResponseEntity(new ApiResponse(false, "The product already confirmed"), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ApiResponse(false, "The product already confirmed"), HttpStatus.BAD_REQUEST);
                 }
 
                 transactionDetail.setMarketConfirm(MarketConfirm.CONFIRMED);
@@ -236,7 +235,7 @@ public class TransactionController {
         }
 
         transactionDetails = transactionDetailService.findAllByTransaction(transaction);
-        Boolean statusTransaction = true;
+        Boolean statusTransaction = Boolean.TRUE;
         for(TransactionDetail checkTransaction : transactionDetails){
             if(checkTransaction.getMarketConfirm() != MarketConfirm.CONFIRMED){
                 statusTransaction = false;
@@ -249,13 +248,12 @@ public class TransactionController {
             transactionService.save(transaction);
         }
 
-        return new ResponseEntity(new ApiResponse(true, "Product have been confirmed"), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new ApiResponse(true, "Product have been confirmed"), HttpStatus.ACCEPTED);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){
@@ -264,16 +262,14 @@ public class TransactionController {
         int targetStringLength = 16;
         Random random = new Random();
 
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return generatedString;
     }
 
-    public Boolean productIsPassedDirectlyIntoUser(Product product){
+    private Boolean productIsPassedDirectlyIntoUser(Product product){
         Market market = marketService.findMarketByProduct(product);
         User user = market.getUser();
         Set<Role> roles = user.getRoles();

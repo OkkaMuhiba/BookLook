@@ -34,15 +34,15 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<?> getUserData(){
         String userId = getUserPrincipal().getUserId();
-        return new ResponseEntity(userService.findByUserId(userId), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserDataFromUserId(@PathVariable String userId){
         if(userService.userExistByUserId(userId)){
-            return new ResponseEntity(userService.findByUserId(userId), HttpStatus.OK);
+            return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new ApiResponse(false, "User does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "User does not exist"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -57,7 +57,7 @@ public class UserController {
         user.setNumberPhone(editProfileRequest.getNumberPhone());
         userService.save(user);
 
-        return new ResponseEntity(new ApiResponse(true, "Profile edited successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Profile edited successfully"), HttpStatus.OK);
     }
 
     @PutMapping("/edit/profile/photo")
@@ -65,8 +65,7 @@ public class UserController {
         String userId = getUserPrincipal().getUserId();
         User user = userService.findByUserId(userId);
 
-        MultipartFile pictureFile = picture;
-        String fileName = fileStorageService.storeFile(pictureFile, "users");
+        String fileName = fileStorageService.storeFile(picture, "users");
         String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/users/")
                 .path(fileName)
@@ -75,7 +74,7 @@ public class UserController {
         user.setUserPhoto(photoUri);
         userService.save(user);
 
-        return new ResponseEntity(new ApiResponse(true, "Photo Profile edited successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Photo Profile edited successfully"), HttpStatus.OK);
     }
 
     @PutMapping("/edit/password")
@@ -84,22 +83,21 @@ public class UserController {
         User user = userService.findByUserId(userId);
 
         if(!(passwordEncoder.matches(editUserPasswordRequest.getOldPassword(), user.getPassword()))){
-            return new ResponseEntity(new ApiResponse(false, "Old password is wrong"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Old password is wrong"), HttpStatus.BAD_REQUEST);
         }
 
         if(passwordEncoder.matches(editUserPasswordRequest.getNewPassword(), user.getPassword())){
-            return new ResponseEntity(new ApiResponse(false, "Your new password is same as your old password"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Your new password is same as your old password"), HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(passwordEncoder.encode(editUserPasswordRequest.getNewPassword()));
         userService.save(user);
 
-        return new ResponseEntity(new ApiResponse(true, "Your password has been changed"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Your password has been changed"), HttpStatus.OK);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 }

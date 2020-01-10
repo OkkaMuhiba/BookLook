@@ -49,7 +49,7 @@ public class LibraryController {
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Set<Library> libraries = libraryService.findAllByUser(user);
 
-        return new ResponseEntity(libraries, HttpStatus.OK);
+        return new ResponseEntity<>(libraries, HttpStatus.OK);
     }
 
     @GetMapping("/books/{userId}/{key}/{fileName:.+}")
@@ -75,11 +75,11 @@ public class LibraryController {
         Resource resource = fileStorageService.loadFileAsResource("books/"+fileName);
 
         // Try to determine file's content type
-        String contentType = null;
+        String contentType;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
-            return new ResponseEntity(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         // Fallback to the default content type if type could not be determined
@@ -93,10 +93,9 @@ public class LibraryController {
                 .body(resource);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){
@@ -105,12 +104,10 @@ public class LibraryController {
         int targetStringLength = 16;
         Random random = new Random();
 
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return generatedString;
     }
 }

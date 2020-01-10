@@ -63,41 +63,41 @@ public class AdminController {
             );
         }
 
-        return new ResponseEntity(responses, HttpStatus.OK);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @PostMapping("/products/{productId}/confirm")
     public ResponseEntity<?> confirmProduct(@PathVariable String productId){
         if(!(productService.existsByProductId(productId))){
-            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
         }
         Product product = productService.findByProductId(productId);
 
         if(product.getProductConfirm().equals(ProductConfirm.CONFIRMED)){
-            return new ResponseEntity(new ApiResponse(false, "Product already confirmed"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Product already confirmed"), HttpStatus.BAD_REQUEST);
         }
 
         product.setProductConfirm(ProductConfirm.CONFIRMED);
         productService.save(product);
-        return new ResponseEntity(new ApiResponse(true, "Product have been confirmed"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Product have been confirmed"), HttpStatus.OK);
     }
 
     @GetMapping("/profile")
     public ResponseEntity<?> getAuthenticatedAdminData(){
         User user = userService.findByUserId(getUserPrincipal().getUserId());
-        return new ResponseEntity(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/list/users")
     public ResponseEntity<?> getAllUsers(){
         Set<User> users = userService.findAllUser();
-        return new ResponseEntity(users, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PostMapping("/block/user/{userId}/{days}")
     public ResponseEntity<?> blockUserFromUserId(@PathVariable String userId, @PathVariable Long days){
         if(!(userService.userExistByUserId(userId))){
-            return new ResponseEntity(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByUserId(userId);
@@ -107,7 +107,7 @@ public class AdminController {
                 .orElseThrow(() -> new AppException("Market Role not set."));
         
         if(roles.contains(blockRole)){
-            return new ResponseEntity(new ApiResponse(false, "User already blocked"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "User already blocked"), HttpStatus.BAD_REQUEST);
         }
 
         roles.add(blockRole);
@@ -119,13 +119,13 @@ public class AdminController {
         BlockedUser blockedUser = new BlockedUser(user, endTimeBlock);
         blockedUserService.saveBlockedUser(blockedUser);
 
-        return new ResponseEntity(new ApiResponse(true, "User have been blocked"), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new ApiResponse(true, "User have been blocked"), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/block/user")
     public ResponseEntity<?> listAllBlockedUser(){
         Set<BlockedUser> list = blockedUserService.findAllBlockedMarket();
-        return new ResponseEntity(list, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/dashboard/statistic")
@@ -138,18 +138,18 @@ public class AdminController {
                 transactionService.getAllTransactionInNumber()
         );
 
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/unblock/user/{userId}")
     public ResponseEntity<?> unblockUser(@PathVariable String userId){
         if(!(userService.userExistByUserId(userId))){
-            return new ResponseEntity(new ApiResponse(false, "User does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "User does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByUserId(userId);
         if(!(blockedUserService.userAlreadyBlockedBefore(user))){
-            return new ResponseEntity(new ApiResponse(false, "User never be blocked"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "User never be blocked"), HttpStatus.BAD_REQUEST);
         }
 
         Set<Role> roles = user.getRoles();
@@ -162,7 +162,7 @@ public class AdminController {
         BlockedUser blockedUser = blockedUserService.findBlockedUserByUser(user);
         blockedUserService.removeBlockedUser(blockedUser);
 
-        return new ResponseEntity(new ApiResponse(true, "User has been unblocked successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "User has been unblocked successfully"), HttpStatus.OK);
     }
 
     @GetMapping("/check-book/{userId}/{key}/{fileName}")
@@ -187,7 +187,7 @@ public class AdminController {
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
-            return new ResponseEntity(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         // Fallback to the default content type if type could not be determined
@@ -201,10 +201,9 @@ public class AdminController {
                 .body(resource);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){

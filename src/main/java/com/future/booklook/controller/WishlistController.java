@@ -46,19 +46,19 @@ public class WishlistController {
             Product product = productService.findByProductId(wishlistRequest.getProductId());
 
             if(libraryService.existByUserAndProduct(user, product)){
-                return new ResponseEntity(new ApiResponse(false, "Product already exist in Library"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse(false, "Product already exist in Library"), HttpStatus.BAD_REQUEST);
             }
 
             if(wishlistService.existsByUserAndProduct(user, product)){
-                return new ResponseEntity(new ApiResponse(false, "Product already exist in Wishlist"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse(false, "Product already exist in Wishlist"), HttpStatus.BAD_REQUEST);
             } else {
                 wishlistService.save(new Wishlist(user, product));
             }
         } else {
-            return new ResponseEntity(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity(new ApiResponse(true, "Your product has been added into wishlist"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse(true, "Your product has been added into wishlist"), HttpStatus.CREATED);
     }
 
     @GetMapping("")
@@ -71,7 +71,7 @@ public class WishlistController {
             productInfoResponse.add(new ProductInfoResponse(product, market.getMarketId(), market.getMarketName()));
         }
 
-        return new ResponseEntity(productInfoResponse, HttpStatus.OK);
+        return new ResponseEntity<>(productInfoResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
@@ -83,18 +83,17 @@ public class WishlistController {
             if(wishlistService.existsByUserAndProduct(user, product)){
                 wishlistService.deleteByUserAndProduct(user, product);
             } else {
-                return new ResponseEntity(new ApiResponse(false, "Product is not available in your Wishlist"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse(false, "Product is not available in your Wishlist"), HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity(new ApiResponse(false, "Product is not available"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "Product is not available"), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity(new ApiResponse(true, "Product has been removed from wishlist"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, "Product has been removed from wishlist"), HttpStatus.OK);
     }
 
-    public UserPrincipal getUserPrincipal() {
+    private UserPrincipal getUserPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return user;
+        return (UserPrincipal) authentication.getPrincipal();
     }
 }

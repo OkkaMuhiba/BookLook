@@ -21,11 +21,11 @@ public class CategoryController {
     @PostMapping("/create")
     public ResponseEntity<?> createCategory(@RequestBody CreateCategoryRequest category){
         categoryService.save(new Category(category.getCategoryName()));
-        return new ResponseEntity(new ApiResponse(true, "Category created successfully"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse(true, "Category created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("")
     public ResponseEntity<?> showAllCategories(){
-        return new ResponseEntity(categoryService.findAllCategories(), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.findAllCategories(), HttpStatus.OK);
     }
 }
