@@ -97,12 +97,13 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<BasketDetail> basketDetails;
 
-    public Product(String title, Long pageTotal, String author, String publisher, String isbn, String description, Long price, Set<Category> categories, Market market, String productPhoto, String productFile) {
+    public Product(String title, Long pageTotal, String author, String publisher, String isbn, String sku, String description, Long price, Set<Category> categories, Market market, String productPhoto, String productFile) {
         this.title = title;
         this.pageTotal = pageTotal;
         this.author = author;
         this.publisher = publisher;
         this.isbn = isbn;
+        this.sku = sku;
         this.price = price;
         this.description = description;
         this.categories = categories;

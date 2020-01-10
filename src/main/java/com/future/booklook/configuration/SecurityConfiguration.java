@@ -83,6 +83,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/transactions/user/**",
                         "/api/libraries"
                 ).hasRole("USER")
+                .antMatchers("/api/auth/signout").authenticated()
                 .anyRequest().permitAll();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

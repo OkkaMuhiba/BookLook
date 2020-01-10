@@ -42,7 +42,7 @@ public class AdminController {
     private MarketServiceImpl marketService;
 
     @Autowired
-    private BlockedMarketServiceImpl blockedMarketService;
+    private BlockedUserServiceImpl blockedUserService;
 
     @Autowired
     private TransactionServiceImpl transactionService;
@@ -94,21 +94,20 @@ public class AdminController {
         return new ResponseEntity(markets, HttpStatus.OK);
     }
 
-    @PostMapping("/block/market/{marketId}/{days}")
-    public ResponseEntity<?> blockMarketFromMarketId(@PathVariable String marketId, @PathVariable Long days){
-        if(!(marketService.marketExistByMarketId(marketId))){
+    @PostMapping("/block/user/{userId}/{days}")
+    public ResponseEntity<?> blockUserFromUserId(@PathVariable String userId, @PathVariable Long days){
+        if(!(userService.userExistByUserId(userId))){
             return new ResponseEntity(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
         }
 
-        Market market = marketService.findByMarketId(marketId);
-        User user = market.getUser();
+        User user = userService.findByUserId(userId);
         Set<Role> roles = user.getRoles();
 
-        Role blockRole = roleService.findByRoleName(RoleName.ROLE_MARKET_BLOCKED)
+        Role blockRole = roleService.findByRoleName(RoleName.ROLE_USER_BLOCKED)
                 .orElseThrow(() -> new AppException("Market Role not set."));
         
         if(roles.contains(blockRole)){
-            return new ResponseEntity(new ApiResponse(false, "Market already blocked"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiResponse(false, "User already blocked"), HttpStatus.BAD_REQUEST);
         }
 
         roles.add(blockRole);
@@ -117,15 +116,15 @@ public class AdminController {
 
         Date date = new Date();
         Timestamp endTimeBlock = new Timestamp(date.getTime() + (days * 86400000));
-        BlockedMarket blockedMarket = new BlockedMarket(market, endTimeBlock);
-        blockedMarketService.saveBlockedMarket(blockedMarket);
+        BlockedUser blockedUser = new BlockedUser(user, endTimeBlock);
+        blockedUserService.saveBlockedUser(blockedUser);
 
-        return new ResponseEntity(new ApiResponse(true, "Market have been blocked"), HttpStatus.ACCEPTED);
+        return new ResponseEntity(new ApiResponse(true, "User have been blocked"), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/block/market")
-    public ResponseEntity<?> listAllBlockedMarket(){
-        Set<BlockedMarket> list = blockedMarketService.findAllBlockedMarket();
+    @GetMapping("/block/user")
+    public ResponseEntity<?> listAllBlockedUser(){
+        Set<BlockedUser> list = blockedUserService.findAllBlockedMarket();
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
@@ -142,29 +141,28 @@ public class AdminController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    @PostMapping("/unblock/market/{marketId}")
-    public ResponseEntity<?> unblockMarket(@PathVariable String marketId){
-        if(!(marketService.marketExistByMarketId(marketId))){
-            return new ResponseEntity(new ApiResponse(false, "Market does not exist"), HttpStatus.BAD_REQUEST);
+    @PostMapping("/unblock/user/{userId}")
+    public ResponseEntity<?> unblockUser(@PathVariable String userId){
+        if(!(userService.userExistByUserId(userId))){
+            return new ResponseEntity(new ApiResponse(false, "User does not exist"), HttpStatus.BAD_REQUEST);
         }
 
-        Market market = marketService.findByMarketId(marketId);
-        if(!(blockedMarketService.marketAlreadyBlockedBefore(market))){
-            return new ResponseEntity(new ApiResponse(false, "Market never be blocked"), HttpStatus.BAD_REQUEST);
+        User user = userService.findByUserId(userId);
+        if(!(blockedUserService.userAlreadyBlockedBefore(user))){
+            return new ResponseEntity(new ApiResponse(false, "User never be blocked"), HttpStatus.BAD_REQUEST);
         }
 
-        User user = market.getUser();
         Set<Role> roles = user.getRoles();
-        Role blockRole = roleService.findByRoleName(RoleName.ROLE_MARKET_BLOCKED)
+        Role blockRole = roleService.findByRoleName(RoleName.ROLE_USER_BLOCKED)
                 .orElseThrow(() -> new AppException("Market Role not set."));
         roles.remove(blockRole);
         user.setRoles(roles);
         userService.save(user);
 
-        BlockedMarket blockedMarket = blockedMarketService.findBlockedMarketByMarket(market);
-        blockedMarketService.removeBlockedMarket(blockedMarket);
+        BlockedUser blockedUser = blockedUserService.findBlockedUserByUser(user);
+        blockedUserService.removeBlockedUser(blockedUser);
 
-        return new ResponseEntity(new ApiResponse(true, "Market has been unblocked successfully"), HttpStatus.OK);
+        return new ResponseEntity(new ApiResponse(true, "User has been unblocked successfully"), HttpStatus.OK);
     }
 
     @GetMapping("/check-book/{userId}/{key}/{fileName}")

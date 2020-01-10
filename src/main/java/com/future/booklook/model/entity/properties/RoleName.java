@@ -4,6 +4,6 @@ public enum  RoleName {
     ROLE_USER,
     ROLE_MARKET,
     ROLE_ADMIN,
-    ROLE_MARKET_BLOCKED
+    ROLE_USER_BLOCKED
 }
 

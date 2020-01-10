@@ -278,7 +278,7 @@ public class TransactionController {
         User user = market.getUser();
         Set<Role> roles = user.getRoles();
         for(Role role : roles){
-            if(role.getName().equals(RoleName.ROLE_MARKET_BLOCKED)){
+            if(role.getName().equals(RoleName.ROLE_USER_BLOCKED)){
                 return true;
             }
         }

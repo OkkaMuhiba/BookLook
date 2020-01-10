@@ -1,6 +1,7 @@
 package com.future.booklook.controller;
 
 import com.future.booklook.exception.AppException;
+import com.future.booklook.model.entity.BlockedUser;
 import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.model.entity.User;
@@ -10,6 +11,7 @@ import com.future.booklook.payload.request.SignInRequest;
 import com.future.booklook.payload.request.SignUpRequest;
 import com.future.booklook.security.JwtTokenProvider;
 import com.future.booklook.security.UserPrincipal;
+import com.future.booklook.service.impl.BlockedUserServiceImpl;
 import com.future.booklook.service.impl.RoleServiceImpl;
 import com.future.booklook.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
@@ -23,8 +25,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 @Api
@@ -41,6 +47,9 @@ public class AuthController {
     private RoleServiceImpl roleService;
 
     @Autowired
+    private BlockedUserServiceImpl blockedUserService;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -54,15 +63,28 @@ public class AuthController {
         User user = userService.findByUserId(userPrincipal.getUserId());
         Set<Role> roles = user.getRoles();
         Boolean authenticatedStatus = true;
+        String blockedUntil = null;
         for(Role role : roles){
-            if(role.getName() == RoleName.ROLE_ADMIN){
+            if(role.getName().equals(RoleName.ROLE_ADMIN)){
                 authenticatedStatus = false;
+                break;
+            }
+
+            if(role.getName().equals(RoleName.ROLE_USER_BLOCKED)){
+                BlockedUser blockedUser = blockedUserService.findBlockedUserByUser(user);
+                Date date = new Date();
+                date.setTime(blockedUser.getEndAt().getTime());
+                blockedUntil = new SimpleDateFormat("d-M-yyyy").format(date);
                 break;
             }
         }
 
         if(!(authenticatedStatus)){
-            return new ResponseEntity(new JwtAuthenticationResponse(false, "You're not allowed to login"), HttpStatus.BAD_REQUEST);
+            if(blockedUntil == null){
+                return new ResponseEntity(new JwtAuthenticationResponse(false, "You're not allowed to login"), HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity(new JwtAuthenticationResponse(false, "You're blocked by admin, until "+blockedUntil), HttpStatus.BAD_REQUEST);
+            }
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -126,6 +148,12 @@ public class AuthController {
         user.setRoles(Collections.singleton(userRole));
 
         return new ResponseEntity(new ApiResponse(true, "User registered successfully"), HttpStatus.OK);
+    }
+
+    @PostMapping("/signout")
+    public ResponseEntity<?> removeAuthenticationUser(HttpServletRequest request) throws ServletException {
+        request.logout();
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     public Authentication authenticationAttempt(SignInRequest signInRequest){

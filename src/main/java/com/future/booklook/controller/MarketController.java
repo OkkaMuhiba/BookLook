@@ -1,7 +1,6 @@
 package com.future.booklook.controller;
 
 import com.future.booklook.exception.AppException;
-import com.future.booklook.model.entity.BlockedMarket;
 import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.User;
@@ -26,8 +25,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Random;
 import java.util.Set;
 
@@ -48,7 +45,7 @@ public class MarketController {
     private RoleServiceImpl roleService;
 
     @Autowired
-    private BlockedMarketServiceImpl blockedMarketService;
+    private BlockedUserServiceImpl blockedMarketService;
 
     @Autowired
     private ProductServiceImpl productService;
@@ -139,32 +136,6 @@ public class MarketController {
         market.setMarketPhoto(photoUri);
         marketService.save(market);
         return new ResponseEntity(new ApiResponse(true, "Photo market has been edited successfully"), HttpStatus.OK);
-    }
-
-    @GetMapping("/block/check")
-    public ResponseEntity<?> checkIfMarketIsBlocked(){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
-        Set<Role> roles = user.getRoles();
-        Role blockRole = roleService.findByRoleName(RoleName.ROLE_MARKET_BLOCKED)
-                .orElseThrow(() -> new AppException("Market Role not set."));
-
-        if(roles.contains(blockRole)){
-            Market market = user.getMarket();
-            BlockedMarket blockingStatus = blockedMarketService.findBlockedMarketByMarket(market);
-
-            Date date = new Date();
-            Timestamp endTimeBlock = new Timestamp(date.getTime());
-            if(endTimeBlock.after(blockingStatus.getEndAt())){
-                roles.remove(blockRole);
-                user.setRoles(roles);
-                userService.save(user);
-                blockedMarketService.removeBlockedMarket(blockingStatus);
-            } else {
-                return new ResponseEntity(new ApiResponse(false, "Market is still blocked by administrator"), HttpStatus.OK);
-            }
-        }
-
-        return new ResponseEntity(new ApiResponse(true, "Market is allowed to be accessed"), HttpStatus.OK);
     }
 
     @GetMapping("/check-book/{userId}/{key}/{fileName}")
