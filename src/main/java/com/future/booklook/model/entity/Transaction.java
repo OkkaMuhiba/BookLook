@@ -24,6 +24,9 @@ public class Transaction {
     @Column(name = TransactionConstant.CHECKOUT)
     private Long checkout;
 
+    @Column(name = TransactionConstant.TRANSACTION_CODE)
+    private String transactionCode;
+
     @Enumerated(EnumType.STRING)
     @Column(name = TransactionConstant.TRANSFER_CONFIRM)
     private TransferConfirm transferConfirm;
@@ -48,9 +51,10 @@ public class Transaction {
     @OneToMany(mappedBy = "transaction")
     private Set<TransactionDetail> transactionDetails;
 
-    public Transaction(Long checkout, User user) {
+    public Transaction(Long checkout, User user, String transactionCode) {
         this.checkout = checkout;
         this.user = user;
+        this.transactionCode = transactionCode;
         this.transferConfirm = TransferConfirm.UNPAID;
         this.userId = user.getUserId();
     }
@@ -72,6 +76,14 @@ public class Transaction {
 
     public void setCheckout(Long checkout) {
         this.checkout = checkout;
+    }
+
+    public String getTransactionCode() {
+        return transactionCode;
+    }
+
+    public void setTransactionCode(String transactionCode) {
+        this.transactionCode = transactionCode;
     }
 
     public TransferConfirm getTransferConfirm() {

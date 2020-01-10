@@ -32,14 +32,6 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAllByUser(user);
     }
 
-    public Transaction findByTransactionId(String transactionId){
-        return transactionRepository.findByTransactionId(transactionId);
-    }
-
-    public Boolean existsByTransactionId(String transactionId){
-        return transactionRepository.existsByTransactionId(transactionId);
-    }
-
     public Set<Transaction> findAllTransactionByMarket(Market market){
         String marketId = market.getMarketId();
         return transactionRepository.findAllTransactionWithProductInMarket(marketId);
@@ -53,5 +45,13 @@ public class TransactionServiceImpl implements TransactionService {
 
     public Long getAllTransactionInNumber(){
         return transactionRepository.count();
+    }
+
+    public Transaction findByTransactionCode(String transactionCode){
+        return transactionRepository.findByTransactionCode(transactionCode);
+    }
+
+    public Boolean existsByTransactionCode(String transactionCode){
+        return transactionRepository.existsByTransactionCode(transactionCode);
     }
 }

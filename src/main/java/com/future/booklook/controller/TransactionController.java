@@ -17,6 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -69,7 +72,12 @@ public class TransactionController {
             products.add(foundProduct);
             checkout += foundProduct.getPrice();
         }
-        Transaction transaction = transactionService.save(new Transaction(checkout, user));
+
+        Date date = new Date();
+        String timeInString = new SimpleDateFormat("yyyyMMddhhmmss").format(date.getTime());
+        String usernameCode = user.getUsername().substring(0, 3).toUpperCase();
+
+        Transaction transaction = transactionService.save(new Transaction(checkout, user, ("BLK-"+ usernameCode + "-" + timeInString)));
 
         for(Product product : products){
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){
@@ -102,22 +110,22 @@ public class TransactionController {
         return new ResponseEntity(transactions, HttpStatus.OK);
     }
 
-    @GetMapping("/user/show/{transactionId}")
-    public ResponseEntity<?> showTransactionDetailForUser(@PathVariable String transactionId){
-        Transaction transaction = transactionService.findByTransactionId(transactionId);
+    @GetMapping("/user/show/{transactionCode}")
+    public ResponseEntity<?> showTransactionDetailForUser(@PathVariable String transactionCode){
+        Transaction transaction = transactionService.findByTransactionCode(transactionCode);
         Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
 
         TransactionDetailResponse response = new TransactionDetailResponse(transaction, transactionDetails);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    @PutMapping("/user/confirm/{transactionId}")
-    public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionId){
-        if(!(transactionService.existsByTransactionId(transactionId))){
+    @PutMapping("/user/confirm/{transactionCode}")
+    public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionCode){
+        if(!(transactionService.existsByTransactionCode(transactionCode))){
             return new ResponseEntity(new ApiResponse(false, "The transaction cannot be confirmed"), HttpStatus.BAD_REQUEST);
         }
 
-        Transaction transaction = transactionService.findByTransactionId(transactionId);
+        Transaction transaction = transactionService.findByTransactionCode(transactionCode);
         if(transaction.getTransferConfirm() != TransferConfirm.UNPAID){
             return new ResponseEntity(new ApiResponse(false, "The transaction already confirmed"), HttpStatus.BAD_REQUEST);
         }
@@ -170,16 +178,16 @@ public class TransactionController {
         return new ResponseEntity(selectedTransactions, HttpStatus.OK);
     }
 
-    @GetMapping("/market/show/{transactionId}")
-    public ResponseEntity<?> showTransactionDetailWithProductFromMarket(@PathVariable String transactionId){
-        if(!(transactionService.existsByTransactionId(transactionId))){
+    @GetMapping("/market/show/{transactionCode}")
+    public ResponseEntity<?> showTransactionDetailWithProductFromMarket(@PathVariable String transactionCode){
+        if(!(transactionService.existsByTransactionCode(transactionCode))){
             return new ResponseEntity(new ApiResponse(false, "The transaction doesn't exist"), HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByUserId(getUserPrincipal().getUserId());
         Market market = marketService.findByUser(user);
 
-        Transaction transaction = transactionService.findByTransactionId(transactionId);
+        Transaction transaction = transactionService.findByTransactionCode(transactionCode);
         Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
         Set<TransactionDetail> selectedTransactionDetails = new HashSet<>();
 
@@ -193,16 +201,16 @@ public class TransactionController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    @PutMapping("/market/confirm/{transactionId}")
-    public ResponseEntity<?> confirmProductFromMarket(@PathVariable String transactionId){
-        if(!(transactionService.existsByTransactionId(transactionId))){
+    @PutMapping("/market/confirm/{transactionCode}")
+    public ResponseEntity<?> confirmProductFromMarket(@PathVariable String transactionCode){
+        if(!(transactionService.existsByTransactionCode(transactionCode))){
             return new ResponseEntity(new ApiResponse(false, "There's no transaction be recorded"), HttpStatus.BAD_REQUEST);
         }
 
         User marketUser = userService.findByUserId(getUserPrincipal().getUserId());
         Market market = marketService.findByUser(marketUser);
 
-        Transaction transaction = transactionService.findByTransactionId(transactionId);
+        Transaction transaction = transactionService.findByTransactionCode(transactionCode);
         User buyerUser = transactionService.findUserFromTransaction(transaction);
         Set<TransactionDetail> transactionDetails = transactionDetailService.findAllByTransaction(transaction);
 
