@@ -51,10 +51,6 @@ public class MarketServiceImpl implements MarketService {
         return marketRepository.existsByUser(user);
     }
 
-    public Set<Market> findAllMarket(){
-        return marketRepository.findAllMarket();
-    }
-
     public Long getTotalMarketInNumber(){
         return marketRepository.count();
     }

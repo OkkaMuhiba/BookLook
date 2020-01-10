@@ -3,6 +3,7 @@ package com.future.booklook.repository;
 import com.future.booklook.model.entity.Transaction;
 import com.future.booklook.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -29,4 +30,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     Boolean existsByUserIdAndReadKey(String userId, String readKey);
 
     User findByUserIdAndReadKey(String userId, String readKey);
+
+    @Query("select u from User u")
+    Set<User> findAllUser();
 }

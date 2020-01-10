@@ -7,6 +7,8 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -42,5 +44,9 @@ public class UserServiceImpl implements UserService {
 
     public User findUserByUserIdAndReadKey(String userId, String readKey){
         return userRepository.findByUserIdAndReadKey(userId, readKey);
+    }
+
+    public Set<User> findAllUser(){
+        return userRepository.findAllUser();
     }
 }

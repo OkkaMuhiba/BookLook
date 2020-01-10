@@ -26,7 +26,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -152,8 +155,20 @@ public class AuthController {
 
     @PostMapping("/signout")
     public ResponseEntity<?> removeAuthenticationUser(HttpServletRequest request) throws ServletException {
-        request.logout();
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        try{
+            request.logout();
+            HttpSession session= request.getSession(false);
+            SecurityContextHolder.clearContext();
+            if(session != null) {
+                session.invalidate();
+            }
+            for(Cookie cookie : request.getCookies()) {
+                cookie.setMaxAge(0);
+            }
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (ServletException e){
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
     }
 
     public Authentication authenticationAttempt(SignInRequest signInRequest){

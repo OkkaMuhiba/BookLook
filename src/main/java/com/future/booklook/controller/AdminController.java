@@ -88,10 +88,10 @@ public class AdminController {
         return new ResponseEntity(user, HttpStatus.OK);
     }
 
-    @GetMapping("/list/market")
-    public ResponseEntity<?> getAllMarket(){
-        Set<Market> markets = marketService.findAllMarket();
-        return new ResponseEntity(markets, HttpStatus.OK);
+    @GetMapping("/list/users")
+    public ResponseEntity<?> getAllUsers(){
+        Set<User> users = userService.findAllUser();
+        return new ResponseEntity(users, HttpStatus.OK);
     }
 
     @PostMapping("/block/user/{userId}/{days}")

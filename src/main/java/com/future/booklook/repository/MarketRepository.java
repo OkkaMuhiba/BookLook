@@ -24,7 +24,4 @@ public interface MarketRepository extends JpaRepository<Market, String> {
     Boolean existsByMarketCode(String marketCode);
 
     Boolean existsByUser(User user);
-
-    @Query(value = "select m from Market m")
-    Set<Market> findAllMarket();
 }
