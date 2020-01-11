@@ -70,13 +70,9 @@ public class UserServiceImpl implements UserService {
         if(auth == null){
             return null;
         }
-        else if(auth.getPrincipal() instanceof String){
-            UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
-            Optional<User> user = userRepository.findByEmail(userPrincipal.getEmail());
 
-            if (user.isPresent())
-                return user.get();
-        }
-        return null;
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        User user = userRepository.findByUserId(userPrincipal.getUserId());
+        return user;
     }
 }
