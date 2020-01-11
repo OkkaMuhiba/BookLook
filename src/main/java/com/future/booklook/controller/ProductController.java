@@ -66,22 +66,20 @@ public class ProductController {
 
         String fileName = "";
 
-        MultipartFile bookFile = book;
-        fileName = fileStorageService.storeFile(bookFile, "books");
+        fileName = fileStorageService.storeFile(book, "books");
         String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/books/")
                 .path(fileName)
                 .toUriString();
 
-        MultipartFile pictureFile = picture;
-        fileName = fileStorageService.storeFile(pictureFile, "products");
+        fileName = fileStorageService.storeFile(picture, "products");
         String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/products/")
                 .path(fileName)
                 .toUriString();
 
         Long totalProduct = market.getTotalProduct() + 1;
-        String newSku = market.getMarketCode()+"-"+(totalProduct);
+        String newSku = market.getMarketCode()+"-"+(totalProduct.toString());
         market.setTotalProduct(totalProduct);
 
         Product product = new Product(

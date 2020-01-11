@@ -1,5 +1,6 @@
 package com.future.booklook.repository;
 
+import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.Transaction;
 import com.future.booklook.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,6 +32,5 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User findByUserIdAndReadKey(String userId, String readKey);
 
-    @Query("select u from User u")
-    Set<User> findAllUser();
+    Set<User> findByRoles(Set<Role> roles);
 }

@@ -73,10 +73,17 @@ public class TransactionController {
         }
 
         Date date = new Date();
-        String timeInString = new SimpleDateFormat("yyyyMMddhhmmss").format(date.getTime());
-        String usernameCode = user.getUsername().substring(0, 3).toUpperCase();
+        String timeInString = new SimpleDateFormat("yyyyMMdd").format(date.getTime());
+        Long numberOfTransaction =  transactionService.getAllTransactionInNumber() + 1;
+        StringBuilder endCode = new StringBuilder();
 
-        Transaction transaction = transactionService.save(new Transaction(checkout, user, ("BLK-"+ usernameCode + "-" + timeInString)));
+        for(int i = 0; i < (6 - numberOfTransaction.toString().length()); i++){
+            endCode.append("0");
+        }
+        endCode.append(numberOfTransaction.toString());
+        String finalEndCode = endCode.toString();
+
+        Transaction transaction = transactionService.save(new Transaction(checkout, user, ("BLK-"+ timeInString + "-" + finalEndCode)));
 
         for(Product product : products){
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){

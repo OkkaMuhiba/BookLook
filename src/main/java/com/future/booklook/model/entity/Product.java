@@ -73,7 +73,7 @@ public class Product {
     private Market market;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = CategoryProductConstant.TABLE_NAME,
             joinColumns = @JoinColumn(name = CategoryProductConstant.PRODUCT_ID),

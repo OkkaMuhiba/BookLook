@@ -1,18 +1,27 @@
 package com.future.booklook.service.impl;
 
+import com.future.booklook.exception.AppException;
+import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.User;
+import com.future.booklook.model.entity.properties.RoleName;
+import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.repository.UserRepository;
 import com.future.booklook.service.UserService;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     public User findByUserId(String userId){
         return userRepository.findByUserId(userId);
@@ -47,6 +56,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public Set<User> findAllUser(){
-        return userRepository.findAllUser();
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new AppException("User Role not set."));
+        return userRepository.findByRoles(Collections.singleton(userRole));
     }
 }

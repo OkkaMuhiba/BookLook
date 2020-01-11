@@ -68,7 +68,7 @@ public class AuthController {
         String blockedUntil = null;
         for(Role role : roles){
             if(role.getName().equals(RoleName.ROLE_ADMIN)){
-                authenticatedStatus = false;
+                authenticatedStatus = Boolean.FALSE;
                 break;
             }
 
@@ -77,6 +77,7 @@ public class AuthController {
                 Date date = new Date();
                 date.setTime(blockedUser.getEndAt().getTime());
                 blockedUntil = new SimpleDateFormat("d-M-yyyy").format(date);
+                authenticatedStatus = Boolean.FALSE;
                 break;
             }
         }
@@ -143,31 +144,13 @@ public class AuthController {
         );
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         Role userRole = roleService.findByRoleName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
-
         user.setRoles(Collections.singleton(userRole));
 
-        return new ResponseEntity<>(new ApiResponse(true, "User registered successfully"), HttpStatus.OK);
-    }
+        userService.save(user);
 
-    @PostMapping("/signout")
-    public ResponseEntity<?> removeAuthenticationUser(HttpServletRequest request) throws ServletException {
-        try{
-            request.logout();
-            HttpSession session= request.getSession(false);
-            SecurityContextHolder.clearContext();
-            if(session != null) {
-                session.invalidate();
-            }
-            for(Cookie cookie : request.getCookies()) {
-                cookie.setMaxAge(0);
-            }
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (ServletException e){
-            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(new ApiResponse(true, "User registered successfully"), HttpStatus.OK);
     }
 
     private Authentication authenticationAttempt(SignInRequest signInRequest){

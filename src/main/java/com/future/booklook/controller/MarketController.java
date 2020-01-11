@@ -63,17 +63,11 @@ public class MarketController {
             return new ResponseEntity<>(new ApiResponse(false, "Market name have been taken by another user"), HttpStatus.BAD_REQUEST);
         }
 
-        String acceptedMarketCode;
-        int endIndex = 2;
-        while(true){
-            acceptedMarketCode = marketRequest.getMarketName().toUpperCase().substring(0, endIndex);
-
-            if(marketService.MarketCodeAlreadyExist(acceptedMarketCode)){
-                endIndex++;
-            } else {
-                break;
-            }
-        }
+        StringBuilder marketCode = new StringBuilder();;
+        Integer marketNameLength = marketRequest.getMarketName().length();
+        marketCode.append(marketRequest.getMarketName(), 0, 1);
+        marketCode.append(marketRequest.getMarketName(), marketNameLength-2, marketNameLength-1);
+        String acceptedMarketCode = marketCode.toString();
 
         Market market = new Market(
                 marketRequest.getMarketName(),
