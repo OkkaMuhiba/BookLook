@@ -54,4 +54,8 @@ public class TransactionServiceImpl implements TransactionService {
     public Boolean existsByTransactionCode(String transactionCode){
         return transactionRepository.existsByTransactionCode(transactionCode);
     }
+
+    public Boolean existsByTransactionCodeAndUser(String transactionCode, User user){
+        return transactionRepository.existsByTransactionCodeAndUser(transactionCode, user);
+    }
 }

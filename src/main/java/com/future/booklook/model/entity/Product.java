@@ -72,7 +72,6 @@ public class Product {
     @JoinColumn(name = ProductConstant.MARKET_FK, referencedColumnName = MarketConstant.MARKET_ID)
     private Market market;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = CategoryProductConstant.TABLE_NAME,

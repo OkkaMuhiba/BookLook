@@ -46,7 +46,7 @@ public class LibraryController {
 
     @GetMapping("")
     public ResponseEntity<?> getAllLibraryByUser(){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         Set<Library> libraries = libraryService.findAllByUser(user);
 
         return new ResponseEntity<>(libraries, HttpStatus.OK);
@@ -91,11 +91,6 @@ public class LibraryController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
                 .body(resource);
-    }
-
-    private UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){

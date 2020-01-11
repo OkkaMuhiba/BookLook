@@ -84,8 +84,7 @@ public class AdminController {
 
     @GetMapping("/profile")
     public ResponseEntity<?> getAuthenticatedAdminData(){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserFromSession(), HttpStatus.OK);
     }
 
     @GetMapping("/list/users")
@@ -199,11 +198,6 @@ public class AdminController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
                 .body(resource);
-    }
-
-    private UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){

@@ -60,7 +60,7 @@ public class TransactionController {
             return new ResponseEntity<>(new ApiResponse(false, "There's no product to add into Transaction"), HttpStatus.BAD_REQUEST);
         }
 
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         Set<Product> products = new HashSet<>();
         Long checkout = new Long(0);
         for(String productId : transactionRequest.getProducts()){
@@ -110,7 +110,7 @@ public class TransactionController {
 
     @GetMapping("/user/show")
     public ResponseEntity<?> showTransactionsForUser(){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         Set<Transaction> transactions = transactionService.findAllTransactionByUser(user);
 
         return new ResponseEntity<>(transactions, HttpStatus.OK);
@@ -127,7 +127,8 @@ public class TransactionController {
 
     @PutMapping("/user/confirm/{transactionCode}")
     public ResponseEntity<?> confirmTransferTransaction(@PathVariable String transactionCode){
-        if(!(transactionService.existsByTransactionCode(transactionCode))){
+        User user = userService.getUserFromSession();
+        if(!(transactionService.existsByTransactionCodeAndUser(transactionCode, user))){
             return new ResponseEntity<>(new ApiResponse(false, "The transaction cannot be confirmed"), HttpStatus.BAD_REQUEST);
         }
 
@@ -170,7 +171,7 @@ public class TransactionController {
 
     @GetMapping("/market/show")
     public ResponseEntity<?> showTransactionDetailsForMarket(){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         Market market = marketService.findByUser(user);
         Set<Transaction> transactions = transactionService.findAllTransactionByMarket(market);
         Set<Transaction> selectedTransactions = new HashSet<>();
@@ -190,7 +191,7 @@ public class TransactionController {
             return new ResponseEntity<>(new ApiResponse(false, "The transaction doesn't exist"), HttpStatus.BAD_REQUEST);
         }
 
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         Market market = marketService.findByUser(user);
 
         Transaction transaction = transactionService.findByTransactionCode(transactionCode);
@@ -213,7 +214,7 @@ public class TransactionController {
             return new ResponseEntity<>(new ApiResponse(false, "There's no transaction be recorded"), HttpStatus.BAD_REQUEST);
         }
 
-        User marketUser = userService.findByUserId(getUserPrincipal().getUserId());
+        User marketUser = userService.getUserFromSession();
         Market market = marketService.findByUser(marketUser);
 
         Transaction transaction = transactionService.findByTransactionCode(transactionCode);
@@ -256,11 +257,6 @@ public class TransactionController {
         }
 
         return new ResponseEntity<>(new ApiResponse(true, "Product have been confirmed"), HttpStatus.ACCEPTED);
-    }
-
-    private UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){

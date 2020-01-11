@@ -54,8 +54,7 @@ public class ProductController {
             @RequestParam("book") MultipartFile book,
             @RequestParam("categories") String categories
     ){
-        String userId = getUserPrincipal().getUserId();
-        User user = userService.findByUserId(userId);
+        User user = userService.getUserFromSession();
         Market market = marketService.findByUser(user);
 
         String[] categoryArray = categories.split(", ");
@@ -176,15 +175,10 @@ public class ProductController {
 
     @GetMapping("/market/auth/all")
     public ResponseEntity<?> allProductFromAuthenticatedMarket(){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         Market market = user.getMarket();
         Set<Product> products = productService.findAllByMarket(market);
 
         return new ResponseEntity<>(products, HttpStatus.OK);
-    }
-
-    private UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserPrincipal) authentication.getPrincipal();
     }
 }

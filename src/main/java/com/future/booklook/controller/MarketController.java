@@ -52,8 +52,7 @@ public class MarketController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createMarket(@RequestBody CreateMarketRequest marketRequest){
-        String userId = getUserPrincipal().getUserId();
-        User user = userService.findByUserId(userId);
+        User user = userService.getUserFromSession();
 
         if(marketService.marketExistByUser(user)){
             return new ResponseEntity<>(new ApiResponse(false, "User already have market"), HttpStatus.BAD_REQUEST);
@@ -73,7 +72,7 @@ public class MarketController {
                 marketRequest.getMarketName(),
                 marketRequest.getMarketBio(),
                 acceptedMarketCode,
-                userId,
+                user.getUserId(),
                 user
         );
 
@@ -91,10 +90,7 @@ public class MarketController {
 
     @GetMapping("")
     public ResponseEntity<?> getMarketData(){
-        String userId = getUserPrincipal().getUserId();
-        User user = userService.findByUserId(userId);
-
-        return new ResponseEntity<>(marketService.findByUser(user), HttpStatus.OK);
+        return new ResponseEntity<>(marketService.findByUser(userService.getUserFromSession()), HttpStatus.OK);
     }
 
     @GetMapping("/{marketId}")
@@ -105,9 +101,7 @@ public class MarketController {
 
     @PutMapping("/edit/profile")
     public ResponseEntity<?> editMarketProfile(@RequestBody EditMarketRequest editMarketRequest){
-        String userId = getUserPrincipal().getUserId();
-        Market market = userService.findByUserId(userId).getMarket();
-
+        Market market = userService.getUserFromSession().getMarket();
         market.setMarketName(editMarketRequest.getMarketName());
         market.setMarketBio(editMarketRequest.getMarketBio());
 
@@ -117,8 +111,7 @@ public class MarketController {
 
     @PutMapping("/edit/profile/photo")
     public ResponseEntity<?> editPhotoMarket(@RequestParam MultipartFile picture){
-        String userId = getUserPrincipal().getUserId();
-        Market market = userService.findByUserId(userId).getMarket();
+        Market market = userService.getUserFromSession().getMarket();
 
         String fileName = fileStorageService.storeFile(picture, "markets");
         String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -165,11 +158,6 @@ public class MarketController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
                 .body(resource);
-    }
-
-    private UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserPrincipal) authentication.getPrincipal();
     }
 
     private String generateRandomString(){

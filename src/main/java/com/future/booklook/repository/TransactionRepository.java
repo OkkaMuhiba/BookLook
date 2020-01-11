@@ -22,5 +22,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
 
     Transaction findByTransactionCode(String transactionCode);
 
+    Boolean existsByTransactionCodeAndUser(String transactionCode, User user);
+
     Boolean existsByTransactionCode(String transactionCode);
 }

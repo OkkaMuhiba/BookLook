@@ -41,7 +41,7 @@ public class WishlistController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProductIntoWishlist(@RequestBody WishlistRequest wishlistRequest){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         if(productService.existsByProductId(wishlistRequest.getProductId())){
             Product product = productService.findByProductId(wishlistRequest.getProductId());
 
@@ -63,7 +63,7 @@ public class WishlistController {
 
     @GetMapping("")
     public ResponseEntity<?> showAllWishlistFromUser(){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
         Set<Product> products = wishlistService.findAllProductInWishlistByUser(user);
         Set<ProductInfoResponse> productInfoResponse = new HashSet<>();
         for(Product product : products){
@@ -76,7 +76,7 @@ public class WishlistController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteProductFromWishlist(@RequestBody WishlistRequest wishlistRequest){
-        User user = userService.findByUserId(getUserPrincipal().getUserId());
+        User user = userService.getUserFromSession();
 
         if(productService.existsByProductId(wishlistRequest.getProductId())){
             Product product = productService.findByProductId(wishlistRequest.getProductId());
@@ -90,10 +90,5 @@ public class WishlistController {
         }
 
         return new ResponseEntity<>(new ApiResponse(true, "Product has been removed from wishlist"), HttpStatus.OK);
-    }
-
-    private UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserPrincipal) authentication.getPrincipal();
     }
 }

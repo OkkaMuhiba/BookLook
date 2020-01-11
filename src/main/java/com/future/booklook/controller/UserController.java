@@ -33,8 +33,7 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<?> getUserData(){
-        String userId = getUserPrincipal().getUserId();
-        return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserFromSession(), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
@@ -48,8 +47,7 @@ public class UserController {
 
     @PutMapping("/edit/profile")
     public ResponseEntity<?> editUserData(@RequestBody EditProfileRequest editProfileRequest){
-        String userId = getUserPrincipal().getUserId();
-        User user = userService.findByUserId(userId);
+        User user = userService.getUserFromSession();
 
         user.setName(editProfileRequest.getName());
         user.setUsername(editProfileRequest.getUsername());
@@ -62,8 +60,7 @@ public class UserController {
 
     @PutMapping("/edit/profile/photo")
     public ResponseEntity<?> editPhotoProfile(@RequestParam MultipartFile picture){
-        String userId = getUserPrincipal().getUserId();
-        User user = userService.findByUserId(userId);
+        User user = userService.getUserFromSession();
 
         String fileName = fileStorageService.storeFile(picture, "users");
         String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -79,8 +76,7 @@ public class UserController {
 
     @PutMapping("/edit/password")
     public ResponseEntity<?> editPassword(@RequestBody EditUserPasswordRequest editUserPasswordRequest){
-        String userId = getUserPrincipal().getUserId();
-        User user = userService.findByUserId(userId);
+        User user = userService.getUserFromSession();
 
         if(!(passwordEncoder.matches(editUserPasswordRequest.getOldPassword(), user.getPassword()))){
             return new ResponseEntity<>(new ApiResponse(false, "Old password is wrong"), HttpStatus.BAD_REQUEST);
@@ -94,10 +90,5 @@ public class UserController {
         userService.save(user);
 
         return new ResponseEntity<>(new ApiResponse(true, "Your password has been changed"), HttpStatus.OK);
-    }
-
-    private UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserPrincipal) authentication.getPrincipal();
     }
 }
