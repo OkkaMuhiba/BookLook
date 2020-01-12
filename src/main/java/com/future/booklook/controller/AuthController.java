@@ -67,7 +67,7 @@ public class AuthController {
         Boolean authenticatedStatus = Boolean.TRUE;
         String blockedUntil = null;
         for(Role role : roles){
-            if(role.getName().equals(RoleName.ROLE_ADMIN)){
+            if(role.getName().equals(RoleName.ROLE_SUPER_ADMIN) || role.getName().equals(RoleName.ROLE_ADMIN)){
                 authenticatedStatus = Boolean.FALSE;
                 break;
             }
@@ -105,7 +105,7 @@ public class AuthController {
         Set<Role> roles = user.getRoles();
         Boolean authenticatedStatus = false;
         for(Role role : roles){
-            if(role.getName() == RoleName.ROLE_ADMIN){
+            if(role.getName().equals(RoleName.ROLE_SUPER_ADMIN) || role.getName().equals(RoleName.ROLE_ADMIN)){
                 authenticatedStatus = Boolean.TRUE;
                 break;
             }

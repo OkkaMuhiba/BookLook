@@ -62,10 +62,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/admin/add-admin")
+                .hasRole("SUPER_ADMIN")
                 .antMatchers(
-                        "/api/admin/**"
+                        "/api/admin/**",
+                        "/api/categories/create"
                 )
-                .hasRole("ADMIN")
+                .hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers(
                         "/api/markets/",
                         "/api/markets/block/check",
@@ -83,7 +86,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/api/transactions/user/**",
                         "/api/libraries"
                 ).hasRole("USER")
-                .antMatchers("/api/auth/signout").authenticated()
                 .anyRequest().permitAll();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -4,6 +4,7 @@ import com.future.booklook.exception.AppException;
 import com.future.booklook.model.entity.*;
 import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.model.entity.properties.RoleName;
+import com.future.booklook.payload.request.AddAdminRequest;
 import com.future.booklook.payload.response.ApiResponse;
 import com.future.booklook.payload.response.DashboardAdminResponse;
 import com.future.booklook.payload.response.UnconfirmedProductResponse;
@@ -18,15 +19,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Api
 @RestController
@@ -52,6 +51,9 @@ public class AdminController {
 
     @Autowired
     private FileStorageServiceImpl fileStorageService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @GetMapping("/products/unconfirmed")
     public ResponseEntity<?> getAllProductWithUnconfirmedStatus(){
@@ -200,18 +202,45 @@ public class AdminController {
                 .body(resource);
     }
 
+    @PostMapping("/add-admin")
+    public ResponseEntity<?> addNewAdmin(@RequestBody AddAdminRequest addAdminRequest){
+        if (userService.existByUsername(addAdminRequest.getUsername())) {
+            return new ResponseEntity<>(new ApiResponse(false, "Username is already taken!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (userService.existByEmail(addAdminRequest.getEmail())) {
+            return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        User user = new User(
+                addAdminRequest.getName(),
+                addAdminRequest.getUsername(),
+                addAdminRequest.getEmail(),
+                addAdminRequest.getPassword(),
+                addAdminRequest.getNumberPhone()
+        );
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Role userRole = roleService.findByRoleName(RoleName.ROLE_ADMIN)
+                .orElseThrow(() -> new AppException("Admin Role not set."));
+        user.setRoles(Collections.singleton(userRole));
+
+        userService.save(user);
+        return new ResponseEntity<>(new ApiResponse(true, "Admin registered successfully"), HttpStatus.OK);
+    }
+
     private String generateRandomString(){
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 16;
         Random random = new Random();
 
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return generatedString;
     }
 }

@@ -105,7 +105,7 @@ public class TransactionController {
             }
         }
 
-        return new ResponseEntity<>(new ApiResponse(true, "Products have been added into transaction"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(true, transaction.getTransactionCode()), HttpStatus.OK);
     }
 
     @GetMapping("/user/show")
