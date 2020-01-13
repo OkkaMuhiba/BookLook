@@ -83,7 +83,7 @@ public class TransactionController {
         endCode.append(numberOfTransaction.toString());
         String finalEndCode = endCode.toString();
 
-        Transaction transaction = transactionService.save(new Transaction(checkout, user, ("BLK-"+ timeInString + "-" + finalEndCode)));
+        Transaction transaction = transactionService.save(new Transaction(checkout, user, ("BLK/"+ timeInString + "/" + finalEndCode)));
 
         for(Product product : products){
             if(transactionDetailService.checkIfProductAlreadyExistInTransaction(transaction, product)){

@@ -21,7 +21,15 @@ VALUES('ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 1)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO user_roles
+VALUES('ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 2)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO user_roles
 VALUES('d24146e7-0563-41db-9375-a4f4637a2c50', 1)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO user_roles
+VALUES('d24146e7-0563-41db-9375-a4f4637a2c50', 2)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO user_roles
@@ -29,17 +37,33 @@ VALUES('07ecd5dd-e652-400d-8821-c8e8107b12dd', 3)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO category_lists
-VALUES('c74bba01-66ee-4b41-acf0-3fdc80c2c760', 'Fiction')
+VALUES('c74bba01-66ee-4b41-acf0-3fdc80c2c760', 'Fiksi')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO category_lists
-VALUES('62fd358e-f810-404f-bd11-52caa08428c4', 'Education')
+VALUES('62fd358e-f810-404f-bd11-52caa08428c4', 'Edukasi')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO category_lists
-VALUES('5ae17781-c90f-4faa-b048-570f7e04f7db', 'Health')
+VALUES('5ae17781-c90f-4faa-b048-570f7e04f7db', 'Kesehatan')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO category_lists
-VALUES('89e9289a-30d6-42cd-a3aa-0260763cc8ae', 'Sport')
+VALUES('89e9289a-30d6-42cd-a3aa-0260763cc8ae', 'Novel')
 ON CONFLICT DO NOTHING;
+
+INSERT INTO category_lists
+VALUES('7f5b664a-16ca-4fdf-b35d-139904d04c06', 'Teknologi')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO category_lists
+VALUES('024e516d-7e45-4871-bd5e-a8f869c91f41', 'Romansa')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO markets
+VALUES('adedb3cd-2170-4f9c-936a-c84e87d2c1fb', 'Sebuah Toko Buku', 'Ini merupakan sebauh toko buku.', null, 'SEUKU', 0, 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc', 'ff82d45b-e423-4c8f-8b9b-9334857bf7dc', '2020-01-13 13:03:17.291', '2020-01-13 13:03:17.291')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO markets
+VALUES('2d35d6ef-f24d-4174-905c-7cdc1c457eef', 'Fluctlight', 'The future is in your hand.', null, 'FLGHT', 0, 'd24146e7-0563-41db-9375-a4f4637a2c50', 'd24146e7-0563-41db-9375-a4f4637a2c50', '2020-01-13 13:07:40.932', '2020-01-13 13:07:40.932')
+ON CONFLICT DO NOTHING

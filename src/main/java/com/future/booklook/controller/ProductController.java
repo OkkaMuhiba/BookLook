@@ -77,17 +77,23 @@ public class ProductController {
                 .path(fileName)
                 .toUriString();
 
+        StringBuilder newSku = new StringBuilder();
         Long totalProduct = market.getTotalProduct() + 1;
-        String newSku = market.getMarketCode()+"-"+(totalProduct.toString());
-        market.setTotalProduct(totalProduct);
+        newSku.append(market.getMarketCode() + "-");
+        for(int i = 0; i < (4 - totalProduct.toString().length()); i++){
+            newSku.append("0");
+        }
+        newSku.append(totalProduct.toString());
+        String finalNewSku = newSku.toString();
 
+        market.setTotalProduct(totalProduct);
         Product product = new Product(
                 title,
                 pageTotal,
                 author,
                 publisher,
                 isbn,
-                newSku,
+                finalNewSku,
                 description,
                 Long.parseLong(price),
                 categoriesSet,

@@ -62,6 +62,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/admin/check-book/**")
+                .permitAll()
                 .antMatchers("/api/admin/add-admin")
                 .hasRole("SUPER_ADMIN")
                 .antMatchers(
@@ -70,7 +72,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 )
                 .hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers(
-                        "/api/markets/",
+                        "/api/markets",
                         "/api/markets/block/check",
                         "/api/transactions/market/**",
                         "/api/products/create",
