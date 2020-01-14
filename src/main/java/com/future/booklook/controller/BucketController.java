@@ -44,6 +44,14 @@ public class BucketController {
         }
 
         Product product = productService.findByProductId(bucketRequest.getProductId());
+
+        if(marketService.marketExistByUser(user)){
+            Market market = user.getMarket();
+            if(productService.existByProductAndMarket(product, market)){
+                return new ResponseEntity<>(new ApiResponse(false, "This product is in your own market"), HttpStatus.BAD_REQUEST);
+            }
+        }
+
         if(basketService.existsByUser(user)){
             Basket basket = basketService.findByUser(user);
             if(basketDetailService.existsByBasketAndProduct(basket, product)){

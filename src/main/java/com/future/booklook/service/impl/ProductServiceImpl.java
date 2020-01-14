@@ -7,6 +7,9 @@ import com.future.booklook.model.entity.properties.ProductConfirm;
 import com.future.booklook.repository.ProductRepository;
 import com.future.booklook.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -58,5 +61,13 @@ public class ProductServiceImpl implements ProductService {
 
     public Long getAllUnconfirmedBookInNumber(){
         return productRepository.countByProductConfirm(ProductConfirm.UNCONFIRMED);
+    }
+
+    public Page<Product> getAllConfirmedProductLimited(Integer numberOfLimit){
+        return productRepository.findAllByProductConfirm(ProductConfirm.CONFIRMED, PageRequest.of(0, numberOfLimit, Sort.by(Sort.Direction.DESC, "createdAt")));
+    }
+
+    public Boolean existByProductAndMarket(Product product, Market market){
+        return productRepository.existsByProductIdAndMarket(product.getProductId(), market);
     }
 }

@@ -5,6 +5,8 @@ import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.TransactionDetail;
 import com.future.booklook.model.entity.properties.ProductConfirm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,4 +35,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     Set<Product> findAllByProductConfirm(ProductConfirm productConfirm);
 
     Long countByProductConfirm(ProductConfirm productConfirm);
+
+    Boolean existsByProductIdAndMarket(String productId, Market market);
+
+    Page<Product> findAllByProductConfirm(ProductConfirm productConfirm, Pageable pageable);
 }

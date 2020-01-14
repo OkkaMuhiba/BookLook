@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @Api
@@ -101,7 +102,9 @@ public class ProductController {
                 photoUri,
                 bookUri
         );
+        user.setReadKey(generateRandomString());
 
+        userService.save(user);
         marketService.save(market);
         productService.save(product);
         return new ResponseEntity<>(new ApiResponse(true, "Product created successfully"), HttpStatus.CREATED);
@@ -186,5 +189,23 @@ public class ProductController {
         Set<Product> products = productService.findAllByMarket(market);
 
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/dashboard/header/{numberOfLimit}")
+    public ResponseEntity<?> getAllProductLimited(@PathVariable Integer numberOfLimit){
+        return new ResponseEntity<>(productService.getAllConfirmedProductLimited(numberOfLimit).getContent(), HttpStatus.OK);
+    }
+
+    private String generateRandomString(){
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 16;
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

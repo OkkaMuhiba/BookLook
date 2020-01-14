@@ -84,6 +84,22 @@ public class AdminController {
         return new ResponseEntity<>(new ApiResponse(true, "Product have been confirmed"), HttpStatus.OK);
     }
 
+    @PostMapping("/products/{productId}/decline")
+    public ResponseEntity<?> declineProduct(@PathVariable String productId){
+        if(!(productService.existsByProductId(productId))){
+            return new ResponseEntity<>(new ApiResponse(false, "Product does not exist"), HttpStatus.BAD_REQUEST);
+        }
+        Product product = productService.findByProductId(productId);
+
+        if(product.getProductConfirm().equals(ProductConfirm.CONFIRMED)){
+            return new ResponseEntity<>(new ApiResponse(false, "Product already confirmed"), HttpStatus.BAD_REQUEST);
+        }
+
+        product.setProductConfirm(ProductConfirm.DECLINE);
+        productService.save(product);
+        return new ResponseEntity<>(new ApiResponse(true, "Product have been declined"), HttpStatus.OK);
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<?> getAuthenticatedAdminData(){
         return new ResponseEntity<>(userService.getUserFromSession(), HttpStatus.OK);

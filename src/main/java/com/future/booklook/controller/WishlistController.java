@@ -45,6 +45,13 @@ public class WishlistController {
         if(productService.existsByProductId(wishlistRequest.getProductId())){
             Product product = productService.findByProductId(wishlistRequest.getProductId());
 
+            if(marketService.marketExistByUser(user)){
+                Market market = user.getMarket();
+                if(productService.existByProductAndMarket(product, market)){
+                    return new ResponseEntity<>(new ApiResponse(false, "This product is in your own market"), HttpStatus.BAD_REQUEST);
+                }
+            }
+
             if(libraryService.existByUserAndProduct(user, product)){
                 return new ResponseEntity<>(new ApiResponse(false, "Product already exist in Library"), HttpStatus.BAD_REQUEST);
             }
