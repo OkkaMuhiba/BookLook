@@ -124,7 +124,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<?> getProductFromSKU(@PathVariable String productId){
+    public ResponseEntity<?> getProductFromProductId(@PathVariable String productId){
         if(!(productService.existsByProductId(productId))){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
