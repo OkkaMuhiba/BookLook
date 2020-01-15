@@ -26,4 +26,8 @@ public class CategoryServiceImpl implements CategoryService {
     public Set<Category> findAllCategories(){
         return categoryRepository.findAllCategories();
     }
+
+    public Boolean categoryExistByCategoryName(String category){
+        return categoryRepository.existsByCategoryName(category);
+    }
 }

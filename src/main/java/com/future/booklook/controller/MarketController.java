@@ -92,18 +92,31 @@ public class MarketController {
 
     @GetMapping("")
     public ResponseEntity<?> getMarketData(){
-        return new ResponseEntity<>(marketService.findByUser(userService.getUserFromSession()), HttpStatus.OK);
+        User user = userService.getUserFromSession();
+        if(!(marketService.marketExistByUser(user))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(marketService.findByUser(user), HttpStatus.OK);
     }
 
     @GetMapping("/{marketId}")
     public ResponseEntity<?> getMarketDataById(@PathVariable String marketId){
+        if(!(marketService.marketExistByMarketId(marketId))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         Market market = marketService.findByMarketId(marketId);
         return new ResponseEntity<>(market, HttpStatus.OK);
     }
 
     @PutMapping("/edit/profile")
     public ResponseEntity<?> editMarketProfile(@RequestBody EditMarketRequest editMarketRequest){
-        Market market = userService.getUserFromSession().getMarket();
+        User user = userService.getUserFromSession();
+        if(!(marketService.marketExistByUser(user))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Market market = user.getMarket();
         market.setMarketName(editMarketRequest.getMarketName());
         market.setMarketBio(editMarketRequest.getMarketBio());
 
@@ -113,7 +126,12 @@ public class MarketController {
 
     @PutMapping("/edit/profile/photo")
     public ResponseEntity<?> editPhotoMarket(@RequestParam MultipartFile picture){
-        Market market = userService.getUserFromSession().getMarket();
+        User user = userService.getUserFromSession();
+        if(!(marketService.marketExistByUser(user))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Market market = user.getMarket();
 
         String fileName = fileStorageService.storeFile(picture, "markets");
         String photoUri = ServletUriComponentsBuilder.fromCurrentContextPath()

@@ -204,7 +204,7 @@ public class TransactionController {
             }
         }
 
-        TransactionDetailResponse response = new TransactionDetailResponse(transaction, transactionDetails);
+        TransactionDetailResponse response = new TransactionDetailResponse(transaction, selectedTransactionDetails);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

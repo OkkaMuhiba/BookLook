@@ -14,6 +14,8 @@ import java.util.Set;
 public interface CategoryRepository extends JpaRepository<Category, String> {
     Category findByCategoryName(String category);
 
+    Boolean existsByCategoryName(String category);
+
     @Query(value = "SELECT c FROM Category c")
     Set<Category> findAllCategories();
 }

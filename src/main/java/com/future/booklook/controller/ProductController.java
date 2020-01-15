@@ -112,16 +112,22 @@ public class ProductController {
     }
 
     @GetMapping("/category/{categoryName}")
-    public Set<Product> getProductsFromCategory(@PathVariable String categoryName){
+    public ResponseEntity<?> getProductsFromCategory(@PathVariable String categoryName){
+        if(!(categoryService.categoryExistByCategoryName(categoryName))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Category category = categoryService.findByCategoryName(categoryName);
         Set<Category> categoriesSet = new HashSet<>();
         categoriesSet.add(category);
 
-        return productService.findProductsByCategories(categoriesSet);
+        return new ResponseEntity<>(productService.findProductsByCategories(categoriesSet), HttpStatus.OK);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<?> getProductFromSKU(@PathVariable String productId){
+        if(!(productService.existsByProductId(productId))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Product product = productService.findByProductId(productId);
         Market market = marketService.findMarketByProduct(product);
         String marketId = market.getMarketId();
@@ -132,6 +138,9 @@ public class ProductController {
 
     @PutMapping("/edit")
     public ResponseEntity<?> editProduct(@RequestBody EditProductRequest editProductRequest){
+        if(!(productService.existsByProductId(editProductRequest.getProductId()))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Product product = productService.findByProductId(editProductRequest.getProductId());
 
         product.setPrice(Long.parseLong(editProductRequest.getPrice()));
@@ -143,6 +152,9 @@ public class ProductController {
 
     @PutMapping("/edit/photo")
     public ResponseEntity<?> editPhotoProduct(@RequestParam String productId, @RequestParam MultipartFile picture){
+        if(!(productService.existsByProductId(productId))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Product product = productService.findByProductId(productId);
 
         String fileName = fileStorageService.storeFile(picture, "products");
@@ -158,6 +170,9 @@ public class ProductController {
 
     @PutMapping("/edit/book")
     public ResponseEntity<?> editFileProduct(@RequestParam String productId, @RequestParam MultipartFile book){
+        if(!(productService.existsByProductId(productId))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Product product = productService.findByProductId(productId);
 
         String fileName = fileStorageService.storeFile(book, "books");
@@ -186,6 +201,9 @@ public class ProductController {
     @GetMapping("/market/auth/all")
     public ResponseEntity<?> allProductFromAuthenticatedMarket(){
         User user = userService.getUserFromSession();
+        if(!(marketService.marketExistByUser(user))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Market market = user.getMarket();
         Set<Product> products = productService.findAllByMarket(market);
 

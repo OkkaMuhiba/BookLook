@@ -45,7 +45,7 @@ VALUES('62fd358e-f810-404f-bd11-52caa08428c4', 'Edukasi')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO category_lists
-VALUES('5ae17781-c90f-4faa-b048-570f7e04f7db', 'Kesehatan')
+VALUES('5ae17781-c90f-4faa-b048-570f7e04f7db', 'Bisnis')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO category_lists
