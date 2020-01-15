@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -44,16 +45,16 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(
-            @RequestParam("title") String title,
-            @RequestParam("pageTotal") Long pageTotal,
-            @RequestParam("description") String description,
-            @RequestParam("author") String author,
-            @RequestParam("publisher") String publisher,
-            @RequestParam("isbn") String isbn,
-            @RequestParam("price") String price,
-            @RequestParam("picture") MultipartFile picture,
-            @RequestParam("book") MultipartFile book,
-            @RequestParam("categories") String categories
+            @RequestParam("title") @NotBlank String title,
+            @RequestParam("pageTotal") @NotBlank Long pageTotal,
+            @RequestParam("description") @NotBlank String description,
+            @RequestParam("author") @NotBlank String author,
+            @RequestParam("publisher") @NotBlank String publisher,
+            @RequestParam("isbn") @NotBlank String isbn,
+            @RequestParam("price") @NotBlank String price,
+            @RequestParam("picture") @NotBlank MultipartFile picture,
+            @RequestParam("book") @NotBlank MultipartFile book,
+            @RequestParam("categories") @NotBlank String categories
     ){
         User user = userService.getUserFromSession();
         Market market = marketService.findByUser(user);

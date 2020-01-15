@@ -174,6 +174,7 @@ public class AdminController {
                 .orElseThrow(() -> new AppException("Market Role not set."));
         roles.remove(blockRole);
         user.setRoles(roles);
+        userService.deleteUserRoles(user, blockRole);
         userService.save(user);
 
         BlockedUser blockedUser = blockedUserService.findBlockedUserByUser(user);

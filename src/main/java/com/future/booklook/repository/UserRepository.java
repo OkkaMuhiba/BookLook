@@ -4,9 +4,12 @@ import com.future.booklook.model.entity.Role;
 import com.future.booklook.model.entity.Transaction;
 import com.future.booklook.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,4 +36,9 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findByUserIdAndReadKey(String userId, String readKey);
 
     Set<User> findByRoles(Set<Role> roles);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from user_roles where user_id = :userId and role_id = :roleId", nativeQuery = true)
+    void deleteUserRolesByUserIdAndRoleId(@Param("userId") String userId, @Param("roleId") Long roleId);
 }

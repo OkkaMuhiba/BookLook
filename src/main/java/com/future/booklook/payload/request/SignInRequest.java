@@ -1,9 +1,11 @@
 package com.future.booklook.payload.request;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class SignInRequest {
     @NotBlank
+    @Email
     private String usernameOrEmail;
 
     @NotBlank

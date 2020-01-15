@@ -1,10 +1,28 @@
 package com.future.booklook.payload.request;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class SignUpRequest {
+    @NotBlank
+    @Size(min = 3, max = 40)
     private String name;
+
+    @NotBlank
+    @Size(min = 4, max = 15)
     private String username;
+
+    @NotBlank
+    @Email
     private String email;
+
+    @NotBlank
+    @Size(min = 6, max = 32)
     private String password;
+
+    @NotBlank
+    @Size(min = 10, max = 14)
     private String numberPhone;
 
     public String getName() {

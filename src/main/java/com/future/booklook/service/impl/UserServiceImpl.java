@@ -75,4 +75,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserId(userPrincipal.getUserId());
         return user;
     }
+
+    public void deleteUserRoles(User user, Role role){
+        userRepository.deleteUserRolesByUserIdAndRoleId(user.getUserId(), role.getId());
+    }
 }
