@@ -2,12 +2,9 @@ package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.future.booklook.model.constants.CategoryConstant;
-import com.future.booklook.model.constants.CategoryProductConstant;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
  @Entity

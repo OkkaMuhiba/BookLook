@@ -2,16 +2,13 @@ package com.future.booklook.service.impl;
 
 import com.future.booklook.model.entity.Category;
 import com.future.booklook.repository.CategoryRepository;
-import com.future.booklook.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl {
     @Autowired
     private CategoryRepository categoryRepository;
 

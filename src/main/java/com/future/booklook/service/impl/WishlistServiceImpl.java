@@ -4,16 +4,14 @@ import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.model.entity.Wishlist;
 import com.future.booklook.repository.WishlistRepository;
-import com.future.booklook.service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class WishlistServiceImpl implements WishlistService {
+public class WishlistServiceImpl {
     @Autowired
     private WishlistRepository wishlistRepository;
 

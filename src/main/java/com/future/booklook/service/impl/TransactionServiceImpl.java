@@ -6,7 +6,6 @@ import com.future.booklook.model.entity.User;
 import com.future.booklook.repository.ProductRepository;
 import com.future.booklook.repository.TransactionRepository;
 import com.future.booklook.repository.UserRepository;
-import com.future.booklook.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class TransactionServiceImpl implements TransactionService {
+public class TransactionServiceImpl {
     @Autowired
     private TransactionRepository transactionRepository;
 

@@ -5,7 +5,6 @@ import com.future.booklook.model.constants.ProductConstant;
 import com.future.booklook.model.constants.TransactionConstant;
 import com.future.booklook.model.constants.TransactionDetailConstant;
 import com.future.booklook.model.entity.properties.MarketConfirm;
-import com.future.booklook.model.entity.properties.ProductConfirm;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;

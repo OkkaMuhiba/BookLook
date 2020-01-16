@@ -1,7 +1,6 @@
 package com.future.booklook.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.future.booklook.model.constants.CategoryProductConstant;
 import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.ProductConstant;

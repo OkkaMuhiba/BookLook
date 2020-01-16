@@ -4,7 +4,6 @@ import com.future.booklook.model.entity.Basket;
 import com.future.booklook.model.entity.BasketDetail;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.repository.BasketDetailRepository;
-import com.future.booklook.service.BasketDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class BasketDetailServiceImpl implements BasketDetailService {
+public class BasketDetailServiceImpl {
     @Autowired
     BasketDetailRepository basketDetailRepository;
 

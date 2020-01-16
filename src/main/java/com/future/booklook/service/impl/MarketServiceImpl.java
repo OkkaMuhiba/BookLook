@@ -4,7 +4,6 @@ import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.Product;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.repository.MarketRepository;
-import com.future.booklook.service.MarketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class MarketServiceImpl implements MarketService {
+public class MarketServiceImpl {
     @Autowired
     private MarketRepository marketRepository;
 

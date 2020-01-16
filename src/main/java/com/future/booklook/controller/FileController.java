@@ -1,6 +1,5 @@
 package com.future.booklook.controller;
 
-import com.future.booklook.security.UserPrincipal;
 import com.future.booklook.service.impl.FileStorageServiceImpl;
 import com.future.booklook.service.impl.LibraryServiceImpl;
 import com.future.booklook.service.impl.ProductServiceImpl;
@@ -13,8 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

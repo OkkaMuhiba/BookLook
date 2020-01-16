@@ -1,7 +1,6 @@
 package com.future.booklook.service.impl;
 
 import com.future.booklook.model.entity.BlockedUser;
-import com.future.booklook.model.entity.Market;
 import com.future.booklook.model.entity.User;
 import com.future.booklook.repository.BlockedUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

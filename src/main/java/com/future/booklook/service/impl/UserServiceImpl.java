@@ -7,20 +7,16 @@ import com.future.booklook.model.entity.properties.RoleName;
 import com.future.booklook.repository.RoleRepository;
 import com.future.booklook.repository.UserRepository;
 import com.future.booklook.security.UserPrincipal;
-import com.future.booklook.service.UserService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
     @Autowired
     UserRepository userRepository;
 

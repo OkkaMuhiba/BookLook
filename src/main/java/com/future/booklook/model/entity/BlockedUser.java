@@ -1,7 +1,6 @@
 package com.future.booklook.model.entity;
 
 import com.future.booklook.model.constants.BlockedUserConstant;
-import com.future.booklook.model.constants.MarketConstant;
 import com.future.booklook.model.constants.UserConstant;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
