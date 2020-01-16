@@ -178,7 +178,7 @@ public class ProductController {
                 .path(fileName)
                 .toUriString();
 
-        product.setProductPhoto(bookUri);
+        product.setProductFile(bookUri);
         productService.save(product);
         return new ResponseEntity<>(new ApiResponse(true, "Book file has been Edited successfully"), HttpStatus.OK);
     }
