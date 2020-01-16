@@ -4,12 +4,12 @@ INSERT INTO roles(name) VALUES('ROLE_SUPER_ADMIN') ON CONFLICT DO NOTHING;
 INSERT INTO roles(name) VALUES('ROLE_ADMIN') ON CONFLICT DO NOTHING;
 INSERT INTO roles(name) VALUES('ROLE_USER_BLOCKED') ON CONFLICT DO NOTHING;
 
-INSERT INTO users(user_id, name, username, email, password)
-VALUES('ff82d45b-e423-4c8f-8b9b-9334857bf7dc','Okka Muhiba', 'okkamuhiba', 'test1@mail.com', '$2a$10$2Q5lqCIMn.vic0CCrsYwmeHu7tvZ55w7reqKpKEwPJDENRtpaA3UO')
+INSERT INTO users(user_id, name, username, email, password, read_key)
+VALUES('ff82d45b-e423-4c8f-8b9b-9334857bf7dc','Okka Muhiba', 'okkamuhiba', 'test1@mail.com', '$2a$10$2Q5lqCIMn.vic0CCrsYwmeHu7tvZ55w7reqKpKEwPJDENRtpaA3UO', 'ohLJHfgOJOPIGLHO')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO users(user_id, name, username, email, password)
-VALUES('d24146e7-0563-41db-9375-a4f4637a2c50','Handi Hermawan', 'handihermawan', 'test2@mail.com', '$2a$10$BOUuYbflXEBSeHpQJ0aRWuKzUCDX4GV6TjVIZjzAkmAYgyIY349Eu')
+INSERT INTO users(user_id, name, username, email, password, read_key)
+VALUES('d24146e7-0563-41db-9375-a4f4637a2c50','Handi Hermawan', 'handihermawan', 'test2@mail.com', '$2a$10$BOUuYbflXEBSeHpQJ0aRWuKzUCDX4GV6TjVIZjzAkmAYgyIY349Eu', 'GljGOpgjpJpjpjpg')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO users(user_id, name, username, email, password, read_key)

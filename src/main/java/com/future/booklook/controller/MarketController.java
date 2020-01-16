@@ -42,9 +42,6 @@ public class MarketController {
     private RoleServiceImpl roleService;
 
     @Autowired
-    private BlockedUserServiceImpl blockedMarketService;
-
-    @Autowired
     private ProductServiceImpl productService;
 
     @PostMapping("/create")
@@ -66,6 +63,9 @@ public class MarketController {
         marketCode.append(frontCodeMarket);
         marketCode.append(backCodeMarket);
         String acceptedMarketCode = marketCode.toString().toUpperCase();
+        if(checkIfStringHaveSpace(acceptedMarketCode)){
+            acceptedMarketCode = generateRandomString(5).toUpperCase();
+        }
 
         Market market = new Market(
                 marketRequest.getMarketName(),
@@ -80,7 +80,7 @@ public class MarketController {
                 .orElseThrow(() -> new AppException("Market Role not set."));
         roles.add(marketRole);
         user.setRoles(roles);
-        user.setReadKey(generateRandomString());
+        user.setReadKey(generateRandomString(16));
 
         userService.save(user);
         marketService.save(market);
@@ -146,7 +146,7 @@ public class MarketController {
         if(userService.userExistByUserIdAndReadKey(userId, key)){
             User user = userService.findByUserId(userId);
             if(productService.productExistByFilename(fileName)){
-                user.setReadKey(generateRandomString());
+                user.setReadKey(generateRandomString(16));
                 userService.save(user);
             } else {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -177,10 +177,10 @@ public class MarketController {
                 .body(resource);
     }
 
-    private String generateRandomString(){
+    private String generateRandomString(int length){
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
-        int targetStringLength = 16;
+        int targetStringLength = length;
         Random random = new Random();
 
         return random.ints(leftLimit, rightLimit + 1)
@@ -188,5 +188,20 @@ public class MarketController {
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+    }
+
+    private Boolean checkIfStringHaveSpace(String s){
+        if(s == null){
+            return false;
+        }
+
+        int length = s.length();
+        for(int i = 0; i < length; i++){
+            if(s.charAt(i) == ' '){
+                return false;
+            }
+        }
+
+        return true;
     }
 }

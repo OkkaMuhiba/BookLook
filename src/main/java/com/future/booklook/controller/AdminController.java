@@ -241,6 +241,7 @@ public class AdminController {
         Role userRole = roleService.findByRoleName(RoleName.ROLE_ADMIN)
                 .orElseThrow(() -> new AppException("Admin Role not set."));
         user.setRoles(Collections.singleton(userRole));
+        user.setReadKey(generateRandomString());
 
         userService.save(user);
         return new ResponseEntity<>(new ApiResponse(true, "Admin registered successfully"), HttpStatus.OK);
