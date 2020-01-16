@@ -44,7 +44,7 @@ public class UserServiceImpl {
     }
 
     public Boolean existByEmail(String email){
-        return userRepository.existsByUserId(email);
+        return userRepository.existsByEmail(email);
     }
 
     public Boolean userExistByUserIdAndReadKey(String userId, String readKey){
